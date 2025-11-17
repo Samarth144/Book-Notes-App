@@ -1,39 +1,55 @@
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
-const pg = require('pg');
 const pgSession = require('connect-pg-simple')(session);
 const path = require('path');
+
+const pgPool = require('./src/db/pool');
+const logger = require('./src/utils/logger');
+const pinoHttp = require('pino-http');
+const errorHandler = require('./src/middleware/errorHandler');
+
+const authRoutes = require('./src/routes/authRoutes');
+const searchRoutes = require('./src/routes/searchRoutes');
+const bookRoutes = require('./src/routes/bookRoutes');
+const noteRoutes = require('./src/routes/noteRoutes');
+const profileRoutes = require('./src/routes/profileRoutes');
+const shareRoutes = require('./src/routes/shareRoutes');
+const followRoutes = require('./src/routes/followRoutes');
+const feedRoutes = require('./src/routes/feedRoutes');
+const recommendationRoutes = require('./src/routes/recommendationRoutes');
 
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Database connection setup
-const pgPool = new pg.Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_DATABASE,
-    password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT || 5432,
-});
+// --- Middleware ---
 
-// Add a listener for pool errors
-pgPool.on('error', (err, client) => {
-    console.error('Unexpected error on idle client', err);
-    process.exit(-1);
-});
+// Add pino-http request logger
+app.use(pinoHttp({ logger }));
+
+// Check for session secret
+if (!process.env.SESSION_SECRET) {
+    logger.error('FATAL ERROR: SESSION_SECRET is not defined in your .env file.');
+    process.exit(1);
+}
 
 // Session configuration
 app.use(session({
     store: new pgSession({
-        pool: pgPool,                // Connection pool
-        tableName: 'sessions',       // Use the sessions table we created
+        pool: pgPool,
+        tableName: 'sessions',
     }),
-    secret: process.env.SESSION_SECRET || 'supersecretkey', // Fallback for development, use strong secret in production
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 days
 }));
+
+// Middleware to pass user data to all views
+app.use((req, res, next) => {
+    res.locals.user = req.session.user;
+    next();
+});
 
 // EJS setup
 app.set('view engine', 'ejs');
@@ -46,12 +62,26 @@ app.use(express.static(path.join(__dirname, 'src', 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Basic route
+// --- Routes ---
+app.use(authRoutes);
+app.use(searchRoutes);
+app.use(bookRoutes);
+app.use(noteRoutes);
+app.use(profileRoutes);
+app.use(shareRoutes);
+app.use(followRoutes);
+app.use(feedRoutes);
+app.use(recommendationRoutes);
+
 app.get('/', (req, res) => {
     res.render('home', { title: 'Book Notes App' });
 });
 
-// Start the server
+// --- Error Handling ---
+// This must be the last piece of middleware
+app.use(errorHandler);
+
+// --- Server Start ---
 app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
+    logger.info(`Server running on http://localhost:${port}`);
 });

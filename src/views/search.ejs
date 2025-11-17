@@ -1,0 +1,96 @@
+<%- include('partials/header') %>
+
+<div class="search-container">
+    <h2>Search for Books & Notes</h2>
+    <form action="/search" method="GET" class="search-form">
+        <input type="text" name="q" placeholder="Search by title, author, or note content..." value="<%= query || '' %>" required>
+        <button type="submit" class="btn">Search</button>
+    </form>
+</div>
+
+<% if (errors && errors.length > 0) { %>
+    <div class="error-messages">
+        <ul>
+            <% errors.forEach(error => { %>
+                <li><%= error %></li>
+            <% }) %>
+        </ul>
+    </div>
+<% } %>
+
+<% if (query) { %>
+    <h3>Results for "<%= query %>"</h3>
+
+    <div class="search-results-section">
+        <h4>Your Local Library & Notes</h4>
+        <% if ((localBooks && localBooks.length > 0) || (localNotes && localNotes.length > 0)) { %>
+            <% if (localBooks && localBooks.length > 0) { %>
+                <h5>Matching Books in Your Library</h5>
+                <div class="search-results">
+                    <% localBooks.forEach(book => { %>
+                        <div class="book-card">
+                            <div class="book-card-image">
+                                <img src="<%= book.cover_image_url || '/images/placeholder.png' %>" alt="Cover of <%= book.title %>">
+                            </div>
+                            <div class="book-card-content">
+                                <h4><a href="/notes/<%= book.id %>"><%= book.title %></a></h4>
+                                <p>by <%= book.author %></p>
+                                <p class="search-snippet">Rank: <%= book.rank.toFixed(2) %></p>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } %>
+
+            <% if (localNotes && localNotes.length > 0) { %>
+                <h5>Matching Notes</h5>
+                <div class="search-results">
+                    <% localNotes.forEach(note => { %>
+                        <div class="note-card-search">
+                            <h4><a href="/notes/<%= note.book_id %>#note-<%= note.note_id %>">Note on <%= note.book_title %></a></h4>
+                            <p>by <%= note.book_author %></p>
+                            <% if (note.excerpt) { %>
+                                <blockquote class="search-snippet">
+                                    <%= note.excerpt.substring(0, 150) %>...
+                                </blockquote>
+                            <% } %>
+                            <p class="search-snippet">Rank: <%= note.rank.toFixed(2) %></p>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } %>
+        <% } else { %>
+            <p>No matching books or notes found in your local library.</p>
+        <% } %>
+    </div>
+
+    <div class="search-results-section" style="margin-top: 2em;">
+        <h4>Open Library API Results</h4>
+        <div class="search-results">
+            <% if (apiBooks && apiBooks.length > 0) { %>
+                <% apiBooks.forEach(book => { %>
+                    <div class="book-card">
+                        <div class="book-card-image">
+                            <img src="<%= book.thumbnail || '/images/placeholder.png' %>" alt="Cover of <%= book.title %>">
+                        </div>
+                        <div class="book-card-content">
+                            <h4><%= book.title %></h4>
+                            <p>by <%= book.authors.join(', ') %></p>
+                            <form action="/books/add" method="POST">
+                                <input type="hidden" name="api_id" value="<%= book.id %>">
+                                <input type="hidden" name="title" value="<%= book.title %>">
+                                <input type="hidden" name="authors" value="<%= book.authors.join(', ') %>">
+                                <input type="hidden" name="thumbnail" value="<%= book.thumbnail %>">
+                                <button type="submit" class="btn btn-secondary">Add to My Books</button>
+                            </form>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p>No books found from Open Library API.</p>
+            <% } %>
+        </div>
+    </div>
+<% } %>
+
+<%- include('partials/footer') %>

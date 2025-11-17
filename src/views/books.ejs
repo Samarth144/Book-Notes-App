@@ -1,0 +1,64 @@
+<%- include('partials/header') %>
+
+<div class="library-container">
+    <div class="library-header">
+        <h2>My Library</h2>
+        <form action="/books" method="GET" class="controls-form">
+            <input type="hidden" name="tag" value="<%= tag %>">
+            <div class="control-group">
+                <input type="text" name="filter" placeholder="Filter by title or author..." value="<%= filter %>">
+            </div>
+            <div class="control-group">
+                <select name="sort" onchange="this.form.submit()">
+                    <option value="title_asc" <%= sort === 'title_asc' ? 'selected' : '' %>>Title (A-Z)</option>
+                    <option value="title_desc" <%= sort === 'title_desc' ? 'selected' : '' %>>Title (Z-A)</option>
+                    <option value="author_asc" <%= sort === 'author_asc' ? 'selected' : '' %>>Author (A-Z)</option>
+                    <option value="author_desc" <%= sort === 'author_desc' ? 'selected' : '' %>>Author (Z-A)</option>
+                </select>
+            </div>
+            <button type="submit" class="btn">Apply</button>
+        </form>
+    </div>
+
+    <% if (allTags && allTags.length > 0) { %>
+        <div class="tag-filter-container">
+            <strong>Filter by Tag:</strong>
+            <a href="/books?filter=<%= filter %>&sort=<%= sort %>" class="tag-chip <%= !tag ? 'active' : '' %>">All</a>
+            <% allTags.forEach(t => { %>
+                <a href="/books?tag=<%= t.tag_name %>&filter=<%= filter %>&sort=<%= sort %>" class="tag-chip <%= tag === t.tag_name ? 'active' : '' %>">
+                    <%= t.tag_name %>
+                </a>
+            <% }) %>
+        </div>
+    <% } %>
+
+    <% if (books && books.length > 0) { %>
+        <div class="library-grid">
+            <% books.forEach(book => { %>
+                <div class="book-card-simple">
+                    <img src="<%= book.cover_image_url || '/images/placeholder.png' %>" alt="Cover of <%= book.title %>">
+                    <h4><%= book.title %></h4>
+                    <p><%= book.author %></p>
+                    <a href="/notes/<%= book.id %>" class="btn btn-secondary">View Notes</a>
+                </div>
+            <% }) %>
+        </div>
+
+        <% if (totalPages > 1) { %>
+            <div class="pagination">
+                <a href="/books?page=<%= currentPage - 1 %>&filter=<%= filter %>&sort=<%= sort %>&tag=<%= tag %>" class="btn" <%= currentPage <= 1 ? 'disabled' : '' %>>
+                    &laquo; Previous
+                </a>
+                <span>Page <%= currentPage %> of <%= totalPages %></span>
+                <a href="/books?page=<%= currentPage + 1 %>&filter=<%= filter %>&sort=<%= sort %>&tag=<%= tag %>" class="btn" <%= currentPage >= totalPages ? 'disabled' : '' %>>
+                    Next &raquo;
+                </a>
+            </div>
+        <% } %>
+
+    <% } else { %>
+        <p>Your library is empty or no books match your filter. Use the <a href="/search">Search</a> page to find and add books.</p>
+    <% } %>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,31 @@
+<%- include('partials/header') %>
+
+<div class="feed-container">
+    <h2>My Feed</h2>
+    <p>Activity from users you follow.</p>
+
+    <div class="feed-list">
+        <% if (feedItems && feedItems.length > 0) { %>
+            <% feedItems.forEach(item => { %>
+                <div class="feed-item">
+                    <div class="feed-item-content">
+                        <% if (item.action_type === 'added_book') { %>
+                            <strong><%= item.username %></strong> added <a href="/notes/<%= item.book_id %>"><strong><%= item.book_title %></strong></a> to their library.
+                        <% } else if (item.action_type === 'created_note') { %>
+                            <strong><%= item.username %></strong> created a <a href="/notes/<%= item.book_id %>#note-<%= item.note_id %>">new note</a> on <strong><%= item.book_title %></strong>.
+                        <% } else if (item.action_type === 'shared_note') { %>
+                            <strong><%= item.username %></strong> shared a <a href="/share/<%= item.share_slug %>">note</a> on <strong><%= item.book_title %></strong>.
+                        <% } %>
+                    </div>
+                    <div class="feed-item-meta">
+                        <%= new Date(item.created_at).toLocaleString() %>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p>Your feed is empty. Follow some <a href="/users">users</a> to see their activity here.</p>
+        <% } %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

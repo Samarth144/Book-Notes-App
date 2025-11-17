@@ -1,0 +1,108 @@
+<%- include('partials/header') %>
+<link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+<script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+
+<div class="notes-page-container">
+    <div class="book-header">
+        <img src="<%= book.cover_image_url || '/images/placeholder.png' %>" alt="Cover of <%= book.title %>">
+        <div class="book-header-info">
+            <h2><%= book.title %></h2>
+            <p>by <%= book.author %></p>
+        </div>
+    </div>
+
+    <div class="add-note-container">
+        <h3>Add a New Note</h3>
+        <form action="/notes/<%= book.id %>" method="POST">
+            <div class="form-group">
+                <label for="excerpt">Excerpt / Highlight</label>
+                <textarea name="excerpt" id="excerpt" rows="3" placeholder="Copy a highlight from the book..."></textarea>
+            </div>
+            <div class="location-inputs">
+                <div class="form-group">
+                    <label for="chapter">Chapter</label>
+                    <input type="text" id="chapter" name="chapter" placeholder="e.g. Chapter 5">
+                </div>
+                <div class="form-group">
+                    <label for="page">Page</label>
+                    <input type="text" id="page" name="page" placeholder="e.g. 123">
+                </div>
+            </div>
+            <div class="form-group" style="margin-top: 1em;">
+                <label for="markdown-editor">Your Note</label>
+                <textarea name="content_markdown" id="markdown-editor" placeholder="Write your note here..."></textarea>
+            </div>
+            <div class="form-group" style="margin-top: 1em;">
+                <label for="tags">Tags (comma-separated)</label>
+                <input type="text" id="tags" name="tags" placeholder="e.g. fiction, sci-fi, favorite">
+            </div>
+            <button type="submit" class="btn">Save Note</button>
+        </form>
+    </div>
+
+    <div class="notes-list">
+        <h3>Your Notes</h3>
+        <% if (notes && notes.length > 0) { %>
+            <% notes.forEach(note => { %>
+                <div class="note-card" id="note-<%= note.id %>">
+                    <% if (note.excerpt) { %>
+                        <blockquote class="note-excerpt">
+                            <%= note.excerpt %>
+                            <% if (note.chapter || note.page) { %>
+                                <footer>
+                                    — 
+                                    <% if (note.chapter) { %>Chapter: <%= note.chapter %><% } %>
+                                    <% if (note.chapter && note.page) { %>, <% } %>
+                                    <% if (note.page) { %>Page: <%= note.page %><% } %>
+                                </footer>
+                            <% } %>
+                        </blockquote>
+                    <% } %>
+                    <div class="note-content rendered-html">
+                        <%- note.rendered_html %>
+                    </div>
+                    <div class="note-tags">
+                        <% if (note.tags) { %>
+                            <% note.tags.split(', ').forEach(tag => { %>
+                                <span class="tag-chip"><%= tag %></span>
+                            <% }) %>
+                        <% } %>
+                    </div>
+                    <div class="note-meta">
+                        <span><%= new Date(note.created_at).toLocaleString() %></span>
+                        <div class="note-actions">
+                            <a href="/notes/edit/<%= note.id %>" class="btn btn-sm btn-secondary">Edit</a>
+                            <form action="/notes/delete/<%= note.id %>" method="POST" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                            <form action="/notes/share/<%= note.id %>" method="POST" style="display: inline;">
+                                <button type="submit" class="btn btn-sm <%= note.is_public ? 'btn-warning' : 'btn-info' %>">
+                                    <%= note.is_public ? 'Make Private' : 'Share' %>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <% if (note.is_public && note.share_slug) { %>
+                        <div class="share-link">
+                            <strong>Public Link:</strong>
+                            <input type="text" value="<%= `${req.protocol}://${req.get('host')}/share/${note.share_slug}` %>" readonly onclick="this.select()">
+                        </div>
+                    <% } %>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p>You haven't added any notes for this book yet.</p>
+        <% } %>
+    </div>
+</div>
+
+<script>
+    const easyMDE = new EasyMDE({
+        element: document.getElementById('markdown-editor'),
+        spellChecker: false,
+        minHeight: '150px',
+        status: false,
+    });
+</script>
+
+<%- include('partials/footer') %>

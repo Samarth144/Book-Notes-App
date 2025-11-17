@@ -1,0 +1,43 @@
+<%- include('partials/header') %>
+<link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+<script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+
+<div class="form-container">
+    <h2>Edit Note</h2>
+    <form action="/notes/edit/<%= note.id %>" method="POST">
+        <div class="form-group">
+            <label for="excerpt">Excerpt / Highlight</label>
+            <textarea name="excerpt" id="excerpt" rows="3"><%= note.excerpt || '' %></textarea>
+        </div>
+        <div class="location-inputs">
+            <div class="form-group">
+                <label for="chapter">Chapter</label>
+                <input type="text" id="chapter" name="chapter" value="<%= note.chapter || '' %>">
+            </div>
+            <div class="form-group">
+                <label for="page">Page</label>
+                <input type="text" id="page" name="page" value="<%= note.page || '' %>">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="markdown-editor">Your Note</label>
+            <textarea name="content_markdown" id="markdown-editor"><%= note.content_markdown %></textarea>
+        </div>
+        <div class="form-group">
+            <label for="tags">Tags (comma-separated)</label>
+            <input type="text" id="tags" name="tags" value="<%= note.tags %>">
+        </div>
+        <button type="submit" class="btn">Update Note</button>
+        <a href="/notes/<%= note.book_id %>" class="btn btn-secondary" style="text-align: center; display: block; margin-top: 1em;">Cancel</a>
+    </form>
+</div>
+
+<script>
+    const easyMDE = new EasyMDE({
+        element: document.getElementById('markdown-editor'),
+        spellChecker: false,
+        minHeight: '250px',
+    });
+</script>
+
+<%- include('partials/footer') %>

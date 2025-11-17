@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="theme-light"> <%# Public pages default to light theme %>
+    <header>
+        <h1><a href="/">Book Notes</a></h1>
+        <nav>
+            <ul>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="public-note-container">
+            <div class="book-header">
+                <img src="<%= note.cover_image_url || '/images/placeholder.png' %>" alt="Cover of <%= note.book_title %>">
+                <div class="book-header-info">
+                    <h2><%= note.book_title %></h2>
+                    <p>by <%= note.book_author %></p>
+                </div>
+            </div>
+            <div class="note-card">
+                <div class="note-meta" style="justify-content: flex-end;">
+                    <span>Shared by <%= note.username %> on <%= new Date(note.created_at).toLocaleDateString() %></span>
+                </div>
+                <% if (note.excerpt) { %>
+                    <blockquote class="note-excerpt">
+                        <%= note.excerpt %>
+                        <% if (note.chapter || note.page) { %>
+                            <footer>
+                                — 
+                                <% if (note.chapter) { %>Chapter: <%= note.chapter %><% } %>
+                                <% if (note.chapter && note.page) { %>, <% } %>
+                                <% if (note.page) { %>Page: <%= note.page %><% } %>
+                            </footer>
+                        <% } %>
+                    </blockquote>
+                <% } %>
+                <div class="note-content rendered-html">
+                    <%- note.rendered_html %>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; <%= new Date().getFullYear() %> Book Notes App</p>
+    </footer>
+</body>
+</html>

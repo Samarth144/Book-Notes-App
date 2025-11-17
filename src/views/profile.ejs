@@ -1,0 +1,32 @@
+<%- include('partials/header') %>
+
+<div class="form-container">
+    <h2>My Profile</h2>
+    <p>User: <%= user.username %></p>
+    <p>Email: <%= user.email %></p>
+
+    <hr style="margin: 2em 0;">
+
+    <h3>Preferences</h3>
+    <form action="/profile" method="POST">
+        <div class="form-group">
+            <label for="theme">Theme</label>
+            <select id="theme" name="theme">
+                <option value="light" <%= user.preferences && user.preferences.theme === 'light' ? 'selected' : '' %>>Light</option>
+                <option value="dark" <%= user.preferences && user.preferences.theme === 'dark' ? 'selected' : '' %>>Dark</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="defaultSort">Default Library Sort</label>
+            <select id="defaultSort" name="defaultSort">
+                <option value="title_asc" <%= user.preferences && user.preferences.defaultSort === 'title_asc' ? 'selected' : '' %>>Title (A-Z)</option>
+                <option value="title_desc" <%= user.preferences && user.preferences.defaultSort === 'title_desc' ? 'selected' : '' %>>Title (Z-A)</option>
+                <option value="author_asc" <%= user.preferences && user.preferences.defaultSort === 'author_asc' ? 'selected' : '' %>>Author (A-Z)</option>
+                <option value="author_desc" <%= user.preferences && user.preferences.defaultSort === 'author_desc' ? 'selected' : '' %>>Author (Z-A)</option>
+            </select>
+        </div>
+        <button type="submit" class="btn">Save Preferences</button>
+    </form>
+</div>
+
+<%- include('partials/footer') %>

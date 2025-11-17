@@ -1,0 +1,23 @@
+<%- include('partials/header') %>
+
+<div class="users-container">
+    <h2>Find Users</h2>
+    <div class="users-list">
+        <% if (users && users.length > 0) { %>
+            <% users.forEach(u => { %>
+                <div class="user-card">
+                    <span class="username"><%= u.username %></span>
+                    <form action="/users/follow/<%= u.id %>" method="POST">
+                        <button type="submit" class="btn btn-sm <%= u.is_following ? 'btn-warning' : 'btn-info' %>">
+                            <%= u.is_following ? 'Unfollow' : 'Follow' %>
+                        </button>
+                    </form>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p>There are no other users to follow yet.</p>
+        <% } %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

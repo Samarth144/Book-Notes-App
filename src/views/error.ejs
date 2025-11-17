@@ -1,0 +1,13 @@
+<%- include('partials/header') %>
+
+<div class="error-container">
+    <h2>Oops! Something went wrong.</h2>
+    <p><%= message || 'An unexpected error occurred. Please try again later.' %></p>
+
+    <% if (stack) { %>
+        <h3>Stack Trace (Development Mode)</h3>
+        <pre class="stack-trace"><%= stack %></pre>
+    <% } %>
+</div>
+
+<%- include('partials/footer') %>
