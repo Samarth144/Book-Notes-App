@@ -1,5 +1,5 @@
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f7f9;
@@ -9,19 +9,34 @@ body {
     min-height: 100vh;
 }
 
+body.home-page::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/images/bg5.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;
+}
+
 header {
-    background-color: #fff;
+    background-color: rgba(15, 23, 36, 0.85);
     border-bottom: 1px solid #e0e0e0;
     padding: 0 2em;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 60px;
 }
 
 header h1 a {
-    color: #333;
+    color: #FFFFFF;
     text-decoration: none;
-    font-size: 1.5em;
+    font-size: 2rem;
 }
 
 nav ul {
@@ -33,20 +48,23 @@ nav ul {
 }
 
 nav a {
-    color: #555;
+    color: #94A3B8;
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s;
 }
 
 nav a:hover {
-    color: #007bff;
+    color: #1E40AF;
+}
+
+nav span {
+    color: #94A3B8;
 }
 
 main {
     flex: 1;
     padding: 20px;
-    max-width: 800px;
     width: 100%;
     margin: 20px auto;
     box-sizing: border-box;
@@ -54,11 +72,16 @@ main {
 
 footer {
     text-align: center;
-    padding: 20px;
-    color: #777;
+    padding: 10px;
+    color: #94A3B8;
     font-size: 0.9em;
-    background-color: #fff;
+    background-color: rgba(15, 23, 36, 0.85);
     border-top: 1px solid #e0e0e0;
+    height: 20px;
+}
+
+footer p {
+    margin-top: 3px;
 }
 
 /* Form Styles */
@@ -94,20 +117,31 @@ footer {
 }
 
 .btn {
-    width: 100%;
-    padding: 0.9em;
-    border: none;
-    border-radius: 4px;
-    background-color: #007bff;
+    position: relative;
+    background: rgba(255, 255, 255, 0.08); /* Semi-transparent white */
     color: white;
+    padding: 10px 20px;
+    border-radius: var(--border-radius-base);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     font-size: 1em;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.25, 1);
+    text-decoration: none;
+    display: inline-flex; /* Use inline-flex for better alignment */
+    align-items: center;
+    justify-content: center;
+    
+    /* Glassmorphic Shadow */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .btn:hover {
-    background-color: #0056b3;
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 6px 20px rgba(2,6,23,0.45); /* Soft shadow on hover */
+    transform: translateY(-2px);
 }
 
 .btn-secondary {
@@ -116,6 +150,25 @@ footer {
 
 .btn-secondary:hover {
     background-color: #5a6268;
+}
+
+/* Specific styling for the apply button */
+.btn-apply {
+    width: 80px;
+    background: var(--primary-gradient); /* Retain original color */
+    border: 1px solid #2a2a35; /* From search/select wrapper */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4); /* From search/select wrapper */
+    color: white;
+    font-weight: 600;
+    border-radius: 50px; /* Pill shape, from search/select wrapper */
+    transition: all 0.3s ease-in-out; /* From search/select wrapper */
+}
+
+.btn-apply:hover {
+    border-color: #FF6B00; /* Change border to accent color, from search/select wrapper */
+    box-shadow: 0 0 20px rgba(255, 107, 0, 0.3), /* From search/select wrapper */
+                0 4px 15px rgba(0,0,0,0.4); /* From search/select wrapper */
+    transform: translateY(-2px); /* Slight lift, from search/select wrapper */
 }
 
 /* Error Messages */
@@ -229,37 +282,90 @@ footer {
 }
 
 .book-card-simple {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    text-align: center;
-    padding: 1em;
+    position: relative;
+    display: flex; /* Side by side layout */
+    align-items: center;
+    width: 380px;
+    padding: 20px;
+    border-radius: 16px;
+    overflow: hidden; /* Clips the background blur */
+    background: rgba(255, 255, 255, 0.05); /* Very subtle base */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease;
 }
 
+/* --- The Ambient Glow Background --- */
+/* This creates a glow behind the card matching the book color */
+.book-card-simple::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    /* We use the book cover image again as a background */
+            background-image: var(--book-cover-url);    background-size: cover;
+    background-position: center;
+    filter: blur(40px) brightness(0.6); /* Heavy blur */
+    z-index: -1;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+}
+
+.book-card-simple:hover::before {
+    opacity: 0.8; /* Glow gets brighter on hover */
+}
+
+/* --- The Image --- */
 .book-card-simple img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-    border-radius: 4px;
-    margin-bottom: 1em;
+    width: 100px;
+    height: 150px;
+    border-radius: 6px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    margin-right: 20px;
+    transform: rotate(-3deg); /* Slight aesthetic tilt */
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.book-card-simple:hover img {
+    transform: rotate(0deg) scale(1.05); /* Straighten up on hover */
+}
+
+/* --- Text Content --- */
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 .book-card-simple h4 {
-    font-size: 1em;
-    margin: 0 0 0.5em 0;
-    min-height: 2.4em; /* Reserve space for 2 lines of title */
+    margin: 0;
+    font-size: 1.25rem;
+    color: white;
+    font-weight: 600;
+    line-height: 1.3;
 }
 
 .book-card-simple p {
-    font-size: 0.85em;
-    color: #666;
-    margin: 0 0 1em 0;
+    margin: 5px 0 15px 0;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.7);
 }
 
-.book-card-simple .btn {
-    width: auto;
-    padding: 0.5em 1em;
-    font-size: 0.9em;
+/* --- The Button --- */
+.book-card-simple .btn-secondary {
+    text-decoration: none;
+    padding: 8px 20px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.2s;
+}
+
+.book-card-simple .btn-secondary:hover {
+    background: white;
+    color: black;
 }
 
 /* Library Controls */
@@ -721,4 +827,425 @@ body.theme-dark .book-card-content p,
 body.theme-dark .book-card-simple p,
 body.theme-dark .notes-page-container .book-header p {
     color: #bbb;
+}
+
+.hero-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8rem 2rem;
+    color: var(--text-dark);
+}
+
+.hero-content {
+    max-width: 800px;
+}
+
+.hero-headline {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-left: -430px;
+    opacity: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    /* Aesthetic Black Effect */
+    background: -webkit-linear-gradient(#222, #000);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0px 1px 1px rgba(0,0,0,0.4); /* Subtle shadow */
+}
+
+.hero-headline span {
+    display: inline-block;
+}
+
+.hero-subheadline {
+    font-size: 1.25rem;
+    width: 100%;
+    margin: 0 auto;
+    margin-left: -160px;
+    text-align: left;
+    color: #555;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Digital Note Logo Concept */
+.logo-container {
+    position: relative;
+    padding: 20px 40px;
+    cursor: pointer;
+}
+
+/* Main Text */
+.logo-text {
+    position: relative;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -3px;
+    z-index: 2; /* Text sits on top of the scribble */
+    mix-blend-mode: lighten; /* Cool blending effect */
+    user-select: none;
+}
+
+/* The "I" dotted with a pen shape */
+.logo-text .i-dot {
+    color: #FF6B00; /* Orange Accent */
+    display: inline-block;
+    animation: bounce 2s infinite ease-in-out;
+}
+
+/* Subtext */
+.tagline {
+    position: absolute;
+    bottom: -10px;
+    right: 40px;
+    color: #888;
+    font-size: 0.8rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: slideUp 0.5s ease-out forwards 1.5s;
+}
+
+/* SVG Container for the Scribble */
+.scribble-svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120%;
+    height: 150%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* The Scribble Path */
+.path {
+    fill: none;
+    stroke: #FF6B00; /* Neon Orange */
+    stroke-width: 12;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1500; /* Length of the path */
+    stroke-dashoffset: 1500; /* Start hidden */
+    opacity: 0.8;
+    /* Animation: Draw the line */
+    animation: scribbleAnim 1.2s cubic-bezier(0.37, 0, 0.63, 1) forwards 0.5s;
+    filter: drop-shadow(0 0 8px rgba(255, 107, 0, 0.6)); /* Glow effect */
+}
+
+/* Animations */
+@keyframes scribbleAnim {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes slideUp {
+    to { opacity: 1; bottom: 0; }
+}
+
+/* Hover Effect */
+.logo-container:hover .path {
+    animation: none; /* Reset */
+    stroke-dashoffset: 1500; /* Hide */
+    /* Trigger reflow trick in JS usually needed, but simple CSS hover reset: */
+}
+.logo-container:hover .path {
+    animation: scribbleAnim 0.6s ease-out forwards;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    .logo-text { font-size: 3.5rem; }
+    .tagline { font-size: 0.6rem; right: 30px; }
+}
+
+/* Hero Buttons */
+.hero-buttons {
+    margin-top: 2em;
+    display: flex;
+    gap: 1em;
+    justify-content: flex-start;
+    margin-left: -165px;
+    opacity: 0; /* Initially hidden for animation */
+}
+
+/* --- The Button --- */
+.liquid-btn {
+    position: relative;
+    background: rgba(0, 0, 0, 0.6); /* Dark semi-transparent base */
+    color: white;
+    padding: 10px 50px;
+    border-radius: 999px; /* Pill shape */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    text-decoration: none;
+    
+    /* The Glass/Liquid Depth Effect */
+    box-shadow: 
+        0 0 0 1px rgba(0, 0, 0, 1), /* Inner black stroke */
+        inset 0 0 12px rgba(255, 255, 255, 0.05), /* Inner subtle glow */
+        inset 0 -4px 15px rgba(0, 0, 0, 0.8), /* Inner shadow bottom */
+        0 10px 30px -10px rgba(0, 0, 0, 0.8); /* Outer drop shadow */
+}
+
+/* The Glowing Text */
+.liquid-btn .text {
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+    letter-spacing: 0.5px;
+}
+
+/* The Moving "Liquid" Light (Shimmer) */
+.liquid-btn .shimmer {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+    opacity: 0;
+    transform: translate(var(--x, -50%), var(--y, -50%)); /* Controlled by JS */
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+    filter: blur(20px);
+    mix-blend-mode: overlay;
+}
+
+/* Hover States */
+.liquid-btn:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 
+        0 0 0 1px rgba(0, 0, 0, 1),
+        inset 0 0 20px rgba(255, 255, 255, 0.1),
+        0 0 30px rgba(255, 255, 255, 0.1); /* Outer glow */
+    transform: scale(1.02);
+}
+
+.liquid-btn:hover .shimmer {
+    opacity: 1;
+}
+
+/* --- The Particles (Tiny dots) --- */
+.particle {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    animation: float 3s infinite ease-in-out;
+}
+
+.p1 { width: 2px; height: 2px; top: 20%; left: 20%; animation-delay: 0s; }
+.p2 { width: 3px; height: 3px; top: 70%; right: 25%; animation-delay: 1s; }
+.p3 { width: 1px; height: 1px; top: 40%; right: 10%; animation-delay: 0.5s; }
+.p4 { width: 2px; height: 2px; bottom: 20%; left: 40%; animation-delay: 1.5s; }
+
+.liquid-btn:hover .particle {
+    opacity: 0.8;
+}
+
+ @keyframes float {
+    0%, 100% { transform: translateY(0); opacity: 0.2; }
+    50% { transform: translateY(-5px); opacity: 0.8; }
+}
+:root {
+    --bg-color: #f4f5f7;
+    --grid-color: rgba(0, 0, 0, 0.06);
+    --glow-color: rgba(50, 50, 200, 0.08);
+    --primary-gradient: linear-gradient(145deg, #5B6FF6, #7C5CFF);
+    --primary-shadow: 0 8px 30px rgba(2,6,23,0.6);
+    --primary-hover-shadow: 0 6px 20px rgba(2,6,23,0.45);
+    --border-radius-base: 12px;
+}
+
+body.app-page {
+    background-color: var(--bg-color);
+}
+
+body.app-page::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: 
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: drift 60s linear infinite;
+    z-index: -1;
+}
+
+body.app-page::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        600px circle at var(--x, 50%) var(--y, 50%), 
+        var(--glow-color), 
+        transparent 40%
+    );
+    z-index: -1;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+}
+
+@keyframes drift {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(-50px, -50px); }
+}
+.library-header h2 {
+    color: #2c2c2c;
+}
+/* --- The Search Container --- */
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 400px;
+    max-width: 90%;
+    padding: 8px 15px;
+    border-radius: 50px; /* Pill shape */
+    
+    /* Dark gradient background for the bar */
+    background: linear-gradient(145deg, #1e1e24, #23232a);
+    
+    /* Subtle dark border */
+    border: 1px solid #2a2a35;
+    
+    /* Subtler initial shadow */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    
+    /* Smooth transition for the glow effect */
+    transition: all 0.3s ease-in-out;
+}
+
+/* The magic happens here: When input is focused, style the wrapper */
+.search-wrapper:focus-within {
+    border-color: #FF6B00; /* Change border to accent color */
+    /* The "Cyberpunk" Glow */
+    box-shadow: 0 0 20px rgba(255, 107, 0, 0.3), 
+                0 4px 15px rgba(0,0,0,0.4);
+    transform: translateY(-2px); /* Slight lift */
+}
+
+
+/* --- The Icon --- */
+.search-icon {
+    width: 20px;
+    height: 20px;
+    fill: #6c757d; /* Muted initial color */
+    margin-right: 10px;
+    transition: fill 0.3s ease;
+}
+
+/* Light up icon on focus */
+.search-wrapper:focus-within .search-icon {
+    fill: #FF6B00;
+}
+
+
+/* --- The Input Field --- */
+.search-input {
+    flex-grow: 1;
+    background: none;
+    border: none;
+    outline: none; /* Remove ugly default browser focus ring */
+    
+    color: #e1e1e1; /* Light text color */
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* Styling the placeholder text */
+.search-input::placeholder {
+    color: #6c757d;
+    font-weight: 400;
+}
+.select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 125px;
+    padding: 8px 15px;
+    border-radius: 50px;
+    background: linear-gradient(145deg, #1e1e24, #23232a);
+    border: 1px solid #2a2a35;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    transition: all 0.3s ease-in-out;
+}
+
+.select-wrapper:hover {
+    border-color: #FF6B00;
+    box-shadow: 0 0 20px rgba(255, 107, 0, 0.3), 
+                0 4px 15px rgba(0,0,0,0.4);
+    transform: translateY(-2px);
+}
+
+.styled-select {
+    flex-grow: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #e1e1e1;
+    font-size: 0.9rem;
+    font-weight: 500;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+/* Custom arrow for the select box */
+.select-wrapper::after {
+    content: '▼';
+    font-size: 1rem;
+    color: #6c757d;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: color 0.3s ease;
+}
+
+.select-wrapper:hover::after {
+    color: #FF6B00;
+}
+.styled-select option {
+    background: #23232a;
+    color: #e1e1e1;
+}
+
+.btn-apply {
+    width: 80px;
 }

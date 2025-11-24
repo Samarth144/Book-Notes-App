@@ -5,18 +5,21 @@
         <h2>My Library</h2>
         <form action="/books" method="GET" class="controls-form">
             <input type="hidden" name="tag" value="<%= tag %>">
-            <div class="control-group">
-                <input type="text" name="filter" placeholder="Filter by title or author..." value="<%= filter %>">
+            <div class="search-wrapper">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.42zM11 18a7 7 0 1 1 7-7a7 7 0 0 1-7 7z"/>
+                </svg>
+                <input type="text" name="filter" class="search-input" placeholder="Filter by title or author..." value="<%= filter %>">
             </div>
-            <div class="control-group">
-                <select name="sort" onchange="this.form.submit()">
+            <div class="select-wrapper">
+                <select name="sort" onchange="this.form.submit()" class="styled-select">
                     <option value="title_asc" <%= sort === 'title_asc' ? 'selected' : '' %>>Title (A-Z)</option>
                     <option value="title_desc" <%= sort === 'title_desc' ? 'selected' : '' %>>Title (Z-A)</option>
                     <option value="author_asc" <%= sort === 'author_asc' ? 'selected' : '' %>>Author (A-Z)</option>
                     <option value="author_desc" <%= sort === 'author_desc' ? 'selected' : '' %>>Author (Z-A)</option>
                 </select>
             </div>
-            <button type="submit" class="btn">Apply</button>
+            <button type="submit" class="btn btn-apply">Apply</button>
         </form>
     </div>
 
@@ -35,11 +38,13 @@
     <% if (books && books.length > 0) { %>
         <div class="library-grid">
             <% books.forEach(book => { %>
-                <div class="book-card-simple">
+                <div class="book-card-simple" style="--book-cover-url: url('<%= book.cover_image_url || '/images/placeholder.png' %>');">
                     <img src="<%= book.cover_image_url || '/images/placeholder.png' %>" alt="Cover of <%= book.title %>">
-                    <h4><%= book.title %></h4>
-                    <p><%= book.author %></p>
-                    <a href="/notes/<%= book.id %>" class="btn btn-secondary">View Notes</a>
+                    <div class="content-wrapper">
+                        <h4><%= book.title %></h4>
+                        <p><%= book.author %></p>
+                        <a href="/notes/<%= book.id %>" class="btn btn-secondary">View Notes</a>
+                    </div>
                 </div>
             <% }) %>
         </div>
