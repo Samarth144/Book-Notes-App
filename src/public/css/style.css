@@ -160,14 +160,14 @@ footer p {
     box-shadow: 0 4px 15px rgba(0,0,0,0.4); /* From search/select wrapper */
     color: white;
     font-weight: 600;
-    border-radius: 50px; /* Pill shape, from search/select wrapper */
+    padding: 5px 20px; /* Updated padding */
+    border-radius: 10px; /* Updated border-radius */
     transition: all 0.3s ease-in-out; /* From search/select wrapper */
 }
 
 .btn-apply:hover {
-    border-color: #FF6B00; /* Change border to accent color, from search/select wrapper */
-    box-shadow: 0 0 20px rgba(255, 107, 0, 0.3), /* From search/select wrapper */
-                0 4px 15px rgba(0,0,0,0.4); /* From search/select wrapper */
+    border-color: #2a2a35; /* Keep border color consistent on hover */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4); /* Remove orange glow, keep original shadow */
     transform: translateY(-2px); /* Slight lift, from search/select wrapper */
 }
 
