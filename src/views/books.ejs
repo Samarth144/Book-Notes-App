@@ -39,13 +39,11 @@
     <% if (books && books.length > 0) { %>
         <div class="library-grid">
             <% books.forEach(book => { %>
-                <div class="book-card-simple" style="--book-cover-url: url('<%= book.cover_image_url || '/images/placeholder.png' %>');">
+                <div class="book-card">
                     <img src="<%= book.cover_image_url || '/images/placeholder.png' %>" alt="Cover of <%= book.title %>">
-                    <div class="content-wrapper">
-                        <h4><%= book.title %></h4>
-                        <p><%= book.author %></p>
-                        <a href="/notes/<%= book.id %>" class="btn btn-secondary">View Notes</a>
-                    </div>
+                    <h3><%= book.title %></h3>
+                    <p><%= book.author %></p>
+                    <a href="/notes/<%= book.id %>" class="btn-view-notes">View Notes</a>
                 </div>
             <% }) %>
         </div>

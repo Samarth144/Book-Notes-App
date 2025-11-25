@@ -152,19 +152,37 @@ footer p {
     background-color: #5a6268;
 }
 
-/* Specific styling for the apply button */
+/* =========================
+   Modern "Apply" Button
+   ========================= */
 .btn-apply {
-    width: 80px;
-    background: var(--primary-gradient);
+    /* Bold, modern, and striking appearance */
+    background-image: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); /* Vibrant premium gradient */
     border: none;
-    box-shadow: var(--primary-shadow);
-    color: white;
-    font-weight: 600;
+    border-radius: 50px; /* Full rounded corners for a sleek, modern feel */
+    color: #ffffff;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif; /* Use a clean, modern sans-serif */
+    font-size: 1rem;
+    font-weight: 700; /* Bold typography */
+    letter-spacing: 0.5px;
+    padding: 12px 32px; /* Generous padding for a substantial feel */
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(37, 117, 252, 0.3); /* Subtle, glowing shadow */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth, premium transition */
+    outline: none;
 }
 
+/* Smooth hover animation */
 .btn-apply:hover {
-    box-shadow: var(--primary-hover-shadow);
-    transform: translateY(-1px);
+    transform: translateY(-3px) scale(1.02); /* Slight lift and scale for a dynamic feel */
+    box-shadow: 0 8px 25px rgba(37, 117, 252, 0.5); /* Intensify glow on hover */
+    background-image: linear-gradient(135deg, #7c2ae8 0%, #3b82f6 100%); /* Brighter gradient shift */
+}
+
+.btn-apply:active {
+    transform: translateY(-1px) scale(0.98); /* Subtle click feedback */
+    box-shadow: 0 4px 10px rgba(37, 117, 252, 0.3);
 }
 
 /* Error Messages */
@@ -277,38 +295,79 @@ footer p {
     gap: 2em;
 }
 
-.book-card-simple {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+/* =========================
+   Modern & Minimal Book Cards
+   ========================= */
+.book-card {
+    /* Modern card layout with a premium feel */
+    background-color: #2a2a2a; /* Slightly lighter dark for better contrast */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle, clean border */
+    border-radius: 16px; /* Soft, rounded corners */
+    padding: 24px; /* Balanced spacing inside the card */
     text-align: center;
-    padding: 1em;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); /* Smooth, sophisticated transition */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Soft, deep shadow for depth */
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.book-card-simple img {
+/* Smooth hover lift animation */
+.book-card:hover {
+    transform: translateY(-8px); /* Noticeable but smooth lift */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); /* Deeper shadow on hover */
+    border-color: rgba(255, 255, 255, 0.2); /* Slightly brighter border */
+}
+
+/* Card Image */
+.book-card img {
     width: 100%;
-    height: 220px;
-    object-fit: cover;
-    border-radius: 4px;
-    margin-bottom: 1em;
+    max-width: 180px; /* Ensure consistent image size */
+    height: auto;
+    border-radius: 12px; /* Match card's rounded aesthetic */
+    margin-bottom: 20px; /* Spacing between image and title */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Lift the image slightly off the card */
 }
 
-.book-card-simple h4 {
-    font-size: 1em;
-    margin: 0 0 0.5em 0;
-    min-height: 2.4em; /* Reserve space for 2 lines of title */
+/* Improved Typography for Title */
+.book-card h3 {
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 8px 0; /* Clean spacing */
+    line-height: 1.4;
 }
 
-.book-card-simple p {
-    font-size: 0.85em;
-    color: #666;
-    margin: 0 0 1em 0;
+/* Improved Typography for Author/Description */
+.book-card p {
+    color: #a0a0a0; /* Muted, elegant grey text */
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 400;
+    margin: 0 0 24px 0; /* Spacing before the button */
 }
 
-.book-card-simple .btn-secondary {
-    width: auto;
-    padding: 0.5em 1em;
-    font-size: 0.9em;
+/* "View Notes" Button inside the card */
+.book-card .btn-view-notes {
+    background-color: rgba(255, 255, 255, 0.1); /* Subtle, semi-transparent background */
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Thin, elegant border */
+    border-radius: 30px;
+    padding: 10px 24px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.book-card .btn-view-notes:hover {
+    background-color: #ffffff; /* Fill with white on hover */
+    color: #2a2a2a; /* Dark text for high contrast */
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2); /* Subtle white glow */
 }
 
 /* Library Controls */
