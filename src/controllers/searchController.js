@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const { searchBooks } = require('../services/bookService'); // Open Library API search
 const { searchLocal } = require('../services/localSearchService'); // Local DB search
+const redisClient = require('../services/cacheService');
 
 const getSearchPage = asyncHandler(async (req, res) => {
     const query = req.query.q;
@@ -11,8 +12,18 @@ const getSearchPage = asyncHandler(async (req, res) => {
 
     if (query) {
         try {
-            // Perform Open Library API search
-            apiBooks = await searchBooks(query);
+            // Try to get data from cache first
+            const cachedBooks = await redisClient.get(`search:${query}`);
+            if (cachedBooks) {
+                apiBooks = JSON.parse(cachedBooks);
+            } else {
+                // If not in cache, fetch from API and cache it
+                apiBooks = await searchBooks(query);
+                // Cache for 1 hour
+                await redisClient.set(`search:${query}`, JSON.stringify(apiBooks), {
+                    EX: 3600,
+                });
+            }
         } catch (error) {
             errors.push(error.message);
         }
@@ -42,3 +53,4 @@ const getSearchPage = asyncHandler(async (req, res) => {
 module.exports = {
     getSearchPage,
 };
+

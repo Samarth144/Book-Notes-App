@@ -6,6 +6,16 @@
         <input type="text" name="q" placeholder="Search by title, author, or note content..." value="<%= query || '' %>" required>
         <button type="submit" class="btn">Search</button>
     </form>
+    <div class="search-suggestions">
+        <p><strong>Try searching:</strong> 
+            <a href="/search?q=Atomic%20Habits">“Atomic Habits”</a>, 
+            <a href="/search?q=Harry%20Potter">“Harry Potter”</a>, 
+            <a href="/search?q=Productivity">“Productivity”</a>, 
+            <a href="/search?q=Mindfulness">“Mindfulness”</a>
+        </p>
+        <p><strong>Use ISBN:</strong> Paste any ISBN to import instantly</p>
+        <p><strong>Look inside notes:</strong> Search your note content, quotes, or highlights</p>
+    </div>
 </div>
 
 <% if (errors && errors.length > 0) { %>

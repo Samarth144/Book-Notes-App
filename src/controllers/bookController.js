@@ -59,15 +59,15 @@ const getLibrary = asyncHandler(async (req, res) => {
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
     // Query for the paginated, filtered, and sorted items
-    const limitPlaceholder = `$${queryParams.length + 1}`;
-    const offsetPlaceholder = `$${queryParams.length + 2}`;
+    const limitPlaceholder = `${queryParams.length + 1}`;
+    const offsetPlaceholder = `${queryParams.length + 2}`;
     const libraryQuery = `
         SELECT DISTINCT b.id, b.title, b.author, b.cover_image_url
         FROM books b
         ${joins}
         ${whereClause}
         ORDER BY ${orderBy}
-        LIMIT ${limitPlaceholder} OFFSET ${offsetPlaceholder}
+        LIMIT $${limitPlaceholder} OFFSET $${offsetPlaceholder}
     `;
     const libraryResult = await pool.query(libraryQuery, [...queryParams, itemsPerPage, offset]);
 

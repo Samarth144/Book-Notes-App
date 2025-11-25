@@ -1,11 +1,34 @@
 <%- include('partials/header') %>
 
-<h2>Welcome to Your Book Notes App!</h2>
-
-<% if (user) { %>
-    <p>You are logged in. Go to <a href="/books">My Books</a> to manage your notes.</p>
-<% } else { %>
-    <p>Please <a href="/login">login</a> or <a href="/register">register</a> to start managing your books and notes.</p>
-<% } %>
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-headline">
+            <span class="word">Read</span><span class="dot">.</span>
+            <span class="word">Think</span><span class="dot">.</span>
+            <span class="word">Connect</span><span class="dot">.</span>
+        </h1>
+        <p class="hero-subheadline">
+            SCRIBL is more than a book tracker. It's the all-in-one platform to discover your next favorite read, manage your personal library, capture your thoughts, and connect with a community of passionate readers.
+        </p>
+        <div class="hero-buttons">
+            <a href="/login" class="liquid-btn" id="liquidBtnLogin">
+                <span class="shimmer"></span>
+                <span class="text">Login</span>
+                <span class="particle p1"></span>
+                <span class="particle p2"></span>
+                <span class="particle p3"></span>
+                <span class="particle p4"></span>
+            </a>
+            <a href="/register" class="liquid-btn" id="liquidBtnRegister">
+                <span class="shimmer"></span>
+                <span class="text">Register</span>
+                <span class="particle p1"></span>
+                <span class="particle p2"></span>
+                <span class="particle p3"></span>
+                <span class="particle p4"></span>
+            </a>
+        </div>
+    </div>
+</div>
 
 <%- include('partials/footer') %>

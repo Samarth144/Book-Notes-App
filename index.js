@@ -74,7 +74,7 @@ app.use(feedRoutes);
 app.use(recommendationRoutes);
 
 app.get('/', (req, res) => {
-    res.render('home', { title: 'Book Notes App' });
+    res.render('home', { title: 'Book Notes App', featuredBooks: [] });
 });
 
 // --- Error Handling ---

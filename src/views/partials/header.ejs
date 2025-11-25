@@ -4,11 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
 </head>
-<body class="theme-<%= user && user.preferences && user.preferences.theme ? user.preferences.theme : 'light' %>">
+<body class="theme-<%= user && user.preferences && user.preferences.theme ? user.preferences.theme : 'light' %> <%= title === 'Book Notes App' ? 'home-page' : 'app-page' %>">
     <header>
-        <h1><a href="/">Book Notes</a></h1>
+        <div class="logo-container" onclick="location.href='/'">
+            <!-- The SVG Scribble Background -->
+            <svg class="scribble-svg" viewBox="0 0 300 100" preserveAspectRatio="none">
+                <!-- A chaotic, energetic scribble path -->
+                <path class="path" d="M20,50 C40,20 60,80 90,40 S140,70 160,30 S220,80 250,40 S290,60 280,50" />
+            </svg>
+
+            <div class="logo-text">SCR<span class="i-dot">I</span>BL</div>
+        </div>
         <nav>
             <ul>
                 <% if (user) { %>
