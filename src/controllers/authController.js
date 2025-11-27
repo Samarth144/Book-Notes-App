@@ -33,7 +33,7 @@ const postRegister = asyncHandler(async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         const verificationToken = nanoid();
         const result = await pool.query(
-            'INSERT INTO users (email, username, password, verification_token) VALUES ($1, $2, $3, $4) RETURNING id, email, username',
+            'INSERT INTO users (email, username, password, verification_token) VALUES ($1, $2, $3, $4) RETURNING id, email, username, preferences, created_at',
             [email, username, hashedPassword, verificationToken]
         );
         const user = result.rows[0];
@@ -41,7 +41,7 @@ const postRegister = asyncHandler(async (req, res) => {
         // TODO: Send verification email
         logger.info(`Verification token for ${email}: ${verificationToken}`);
 
-        req.session.user = { id: user.id, email: user.email, username: user.username, preferences: user.preferences };
+        req.session.user = { id: user.id, email: user.email, username: user.username, preferences: user.preferences, created_at: user.created_at };
         res.redirect('/books');
     } catch (err) {
         // This catch block is for a specific user-facing error (duplicate email/username),
@@ -88,7 +88,7 @@ const postLogin = asyncHandler(async (req, res) => {
     if (user) {
         const match = await bcrypt.compare(password, user.password);
         if (match) {
-            req.session.user = { id: user.id, email: user.email, username: user.username, preferences: user.preferences };
+            req.session.user = { id: user.id, email: user.email, username: user.username, preferences: user.preferences, created_at: user.created_at };
             return res.redirect('/books');
         }
     }

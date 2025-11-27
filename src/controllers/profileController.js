@@ -11,12 +11,13 @@ const getProfilePage = asyncHandler(async (req, res) => {
 
 // Update user preferences
 const updateProfile = asyncHandler(async (req, res) => {
-    const { theme, defaultSort } = req.body;
+    const { theme, defaultSort, card_theme } = req.body;
     const userId = req.session.user.id;
 
     const newPreferences = {
         theme: theme || 'light',
         defaultSort: defaultSort || 'title_asc',
+        card_theme: card_theme || '',
     };
 
     // Update preferences in the database
@@ -27,6 +28,10 @@ const updateProfile = asyncHandler(async (req, res) => {
 
     // Update the session object
     req.session.user.preferences = newPreferences;
+
+    if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+        return res.json({ success: true, message: 'Preferences updated' });
+    }
 
     res.redirect('/profile');
 });

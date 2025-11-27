@@ -1,55 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-<body class="theme-light"> <%# Public pages default to light theme %>
-    <header>
-        <h1><a href="/">Book Notes</a></h1>
-        <nav>
-            <ul>
-                <li><a href="/login">Login</a></li>
-                <li><a href="/register">Register</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <div class="public-note-container">
-            <div class="book-header">
-                <img src="<%= note.cover_image_url || '/images/placeholder.png' %>" alt="Cover of <%= note.book_title %>">
-                <div class="book-header-info">
-                    <h2><%= note.book_title %></h2>
-                    <p>by <%= note.book_author %></p>
+<%- include('partials/header') %>
+        <div class="share-page-wrapper">
+            <div class="share-hero">
+                <div class="share-hero-bg" style="background-image: url('<%= note.cover_image_url || '/images/placeholder.jpg' %>')"></div>
+                <div class="share-hero-overlay"></div>
+                <div class="share-hero-content">
+                    <img src="<%= note.cover_image_url || '/images/placeholder.jpg' %>" class="share-book-cover" alt="Cover of <%= note.book_title %>">
+                    <div class="share-book-info">
+                        <h1><%= note.book_title %></h1>
+                        <p class="share-author">by <%= note.book_author %></p>
+                    </div>
                 </div>
             </div>
-            <div class="note-card">
-                <div class="note-meta" style="justify-content: flex-end;">
-                    <span>Shared by <%= note.username %> on <%= new Date(note.created_at).toLocaleDateString() %></span>
+
+            <div class="share-main-card">
+                <div class="share-meta-header">
+                    <div class="share-user-avatar">
+                        <%= note.username.charAt(0).toUpperCase() %>
+                    </div>
+                    <div class="share-user-info">
+                        <div class="share-by-line">Shared by <span class="share-username">@<%= note.username %></span></div>
+                        <div class="share-date"><%= new Date(note.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) %></div>
+                    </div>
                 </div>
+
                 <% if (note.excerpt) { %>
-                    <blockquote class="note-excerpt">
-                        <%= note.excerpt %>
+                    <div class="share-excerpt-box">
+                        <div class="quote-icon">“</div>
+                        <blockquote><%= note.excerpt %></blockquote>
                         <% if (note.chapter || note.page) { %>
-                            <footer>
-                                — 
-                                <% if (note.chapter) { %>Chapter: <%= note.chapter %><% } %>
-                                <% if (note.chapter && note.page) { %>, <% } %>
-                                <% if (note.page) { %>Page: <%= note.page %><% } %>
-                            </footer>
+                            <div class="excerpt-source">
+                                <% if (note.chapter) { %><span><%= note.chapter %></span><% } %>
+                                <% if (note.page) { %><span>Page <%= note.page %></span><% } %>
+                            </div>
                         <% } %>
-                    </blockquote>
+                    </div>
                 <% } %>
-                <div class="note-content rendered-html">
+
+                <div class="share-body rendered-html">
                     <%- note.rendered_html %>
+                </div>
+                
+                <div class="share-cta">
+                    <p>Join <strong>SCRIBL</strong> to save and share your own reading insights.</p>
+                    <a href="/register" class="btn btn-apply">Get Started</a>
                 </div>
             </div>
         </div>
-    </main>
-    <footer>
-        <p>&copy; <%= new Date().getFullYear() %> Book Notes App</p>
-    </footer>
-</body>
-</html>
+<%- include('partials/footer') %>

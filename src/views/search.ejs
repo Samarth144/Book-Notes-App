@@ -18,6 +18,139 @@
     </div>
 </div>
 
+<% if (!query) { %>
+    <% if (typeof recommendations !== 'undefined' && recommendations && recommendations.length > 0) { %>
+        <div class="trending-searches-section">
+            <h3>Recommended for You</h3>
+            <h5 style="margin-bottom: 1.5rem; color: #2615d4; font-size:1.1rem">Based on your library and reading habits</h5>
+            <div class="trending-items-container">
+                <div class="trending-item-section">
+                    <div class="trending-item-books-grid">
+                        <% recommendations.slice(0, 8).forEach(book => { %>
+                            <div class="book-card">
+                                <div class="card-bg-animation"></div>
+                                <img src="<%= book.thumbnail || '/images/placeholder.jpg' %>" alt="Cover of <%= book.title %>">
+                                <div class="content-wrapper">
+                                    <h4 title="<%= book.title %>"><%= book.title %></h4>
+                                    <p>by <%= book.authors.join(', ') %></p>
+                                    <form action="/books/add" method="POST">
+                                        <input type="hidden" name="api_id" value="<%= book.id %>">
+                                        <input type="hidden" name="title" value="<%= book.title %>">
+                                        <input type="hidden" name="authors" value="<%= book.authors.join(', ') %>">
+                                        <input type="hidden" name="thumbnail" value="<%= book.thumbnail %>">
+                                        <input type="hidden" name="source" value="search">
+                                        <button type="submit" class="btn btn-secondary">Add to My Books</button>
+                                    </form>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% } %>
+
+    <div class="trending-searches-section">
+        <h3>Trending Searches</h3>
+
+        <% if (trendingSearches && trendingSearches.authors && trendingSearches.authors.length > 0) { %>
+            <h4 class="trending-subheader">Trending Authors</h4>
+            <div class="trending-items-container">
+                <% trendingSearches.authors.forEach(author => { %>
+                    <div class="trending-item-section">
+                        <h5><%= author.name %></h5>
+                        <div class="trending-item-books-grid">
+                            <% author.books.forEach(book => { %>
+                                <div class="book-card">
+                                    <div class="card-bg-animation"></div>
+                                    <img src="<%= book.thumbnail || '/images/placeholder.jpg' %>" alt="Cover of <%= book.title %>">
+                                    <div class="content-wrapper">
+                                        <h4 title="<%= book.title %>"><%= book.title %></h4>
+                                        <p>by <%= book.authors.join(', ') %></p>
+                                    <form action="/books/add" method="POST">
+                                        <input type="hidden" name="api_id" value="<%= book.id %>">
+                                        <input type="hidden" name="title" value="<%= book.title %>">
+                                        <input type="hidden" name="authors" value="<%= book.authors.join(', ') %>">
+                                        <input type="hidden" name="thumbnail" value="<%= book.thumbnail %>">
+                                        <input type="hidden" name="source" value="search">
+                                        <input type="hidden" name="q" value="<%= query || '' %>">
+                                        <button type="submit" class="btn btn-secondary">Add to My Books</button>
+                                    </form>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+
+        <% if (trendingSearches && trendingSearches.genres && trendingSearches.genres.length > 0) { %>
+            <h4 class="trending-subheader">Trending Genres</h4>
+            <div class="trending-items-container">
+                <% trendingSearches.genres.forEach(genre => { %>
+                    <div class="trending-item-section">
+                        <h5><%= genre.name %></h5>
+                        <div class="trending-item-books-grid">
+                            <% genre.books.forEach(book => { %>
+                                <div class="book-card">
+                                    <div class="card-bg-animation"></div>
+                                    <img src="<%= book.thumbnail || '/images/placeholder.jpg' %>" alt="Cover of <%= book.title %>">
+                                    <div class="content-wrapper">
+                                        <h4 title="<%= book.title %>"><%= book.title %></h4>
+                                        <p>by <%= book.authors.join(', ') %></p>
+                                    <form action="/books/add" method="POST">
+                                        <input type="hidden" name="api_id" value="<%= book.id %>">
+                                        <input type="hidden" name="title" value="<%= book.title %>">
+                                        <input type="hidden" name="authors" value="<%= book.authors.join(', ') %>">
+                                        <input type="hidden" name="thumbnail" value="<%= book.thumbnail %>">
+                                        <input type="hidden" name="source" value="search">
+                                        <input type="hidden" name="q" value="<%= query || '' %>">
+                                        <button type="submit" class="btn btn-secondary">Add to My Books</button>
+                                    </form>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+
+        <% if (trendingSearches && trendingSearches.topics && trendingSearches.topics.length > 0) { %>
+            <h4 class="trending-subheader">Trending Topics</h4>
+            <div class="trending-items-container">
+                <% trendingSearches.topics.forEach(topic => { %>
+                    <div class="trending-item-section">
+                        <h5><%= topic.name %></h5>
+                        <div class="trending-item-books-grid">
+                            <% topic.books.forEach(book => { %>
+                                <div class="book-card">
+                                    <div class="card-bg-animation"></div>
+                                    <img src="<%= book.thumbnail || '/images/placeholder.jpg' %>" alt="Cover of <%= book.title %>">
+                                    <div class="content-wrapper">
+                                        <h4 title="<%= book.title %>"><%= book.title %></h4>
+                                        <p>by <%= book.authors.join(', ') %></p>
+                                    <form action="/books/add" method="POST">
+                                        <input type="hidden" name="api_id" value="<%= book.id %>">
+                                        <input type="hidden" name="title" value="<%= book.title %>">
+                                        <input type="hidden" name="authors" value="<%= book.authors.join(', ') %>">
+                                        <input type="hidden" name="thumbnail" value="<%= book.thumbnail %>">
+                                        <input type="hidden" name="source" value="search">
+                                        <input type="hidden" name="q" value="<%= query || '' %>">
+                                        <button type="submit" class="btn btn-secondary">Add to My Books</button>
+                                    </form>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+    </div>
+<% } %>
+
 <% if (errors && errors.length > 0) { %>
     <div class="error-messages">
         <ul>
@@ -28,8 +161,18 @@
     </div>
 <% } %>
 
+<% if (typeof messages !== 'undefined' && messages.length > 0) { %>
+    <div class="success-messages" style="background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 1em; border-radius: 4px; margin-bottom: 1.5em;">
+        <ul style="margin: 0; padding-left: 1.2em;">
+            <% messages.forEach(message => { %>
+                <li><%= message %></li>
+            <% }) %>
+        </ul>
+    </div>
+<% } %>
+
 <% if (query) { %>
-    <h3>Results for "<%= query %>"</h3>
+    <h3 class="search-results-title">Results for "<%= query %>"</h3>
 
     <div class="search-results-section">
         <h4>Your Local Library & Notes</h4>
@@ -39,13 +182,12 @@
                 <div class="search-results">
                     <% localBooks.forEach(book => { %>
                         <div class="book-card">
-                            <div class="book-card-image">
-                                <img src="<%= book.cover_image_url || '/images/placeholder.png' %>" alt="Cover of <%= book.title %>">
-                            </div>
-                            <div class="book-card-content">
-                                <h4><a href="/notes/<%= book.id %>"><%= book.title %></a></h4>
+                            <div class="card-bg-animation"></div>
+                            <img src="<%= book.cover_image_url || '/images/placeholder.jpg' %>" alt="Cover of <%= book.title %>">
+                            <div class="content-wrapper">
+                                <h4><a href="/notes/<%= book.id %>" style="color: white; text-decoration: none;" title="<%= book.title %>"><%= book.title %></a></h4>
                                 <p>by <%= book.author %></p>
-                                <p class="search-snippet">Rank: <%= book.rank.toFixed(2) %></p>
+                                <p class="search-snippet" style="color: rgba(255,255,255,0.7);">Rank: <%= book.rank.toFixed(2) %></p>
                             </div>
                         </div>
                     <% }) %>
@@ -75,22 +217,23 @@
     </div>
 
     <div class="search-results-section" style="margin-top: 2em;">
-        <h4>Open Library API Results</h4>
+        <h4>Look what we found</h4>
         <div class="search-results">
             <% if (apiBooks && apiBooks.length > 0) { %>
                 <% apiBooks.forEach(book => { %>
                     <div class="book-card">
-                        <div class="book-card-image">
-                            <img src="<%= book.thumbnail || '/images/placeholder.png' %>" alt="Cover of <%= book.title %>">
-                        </div>
-                        <div class="book-card-content">
-                            <h4><%= book.title %></h4>
+                        <div class="card-bg-animation"></div>
+                        <img src="<%= book.thumbnail || '/images/placeholder.jpg' %>" alt="Cover of <%= book.title %>">
+                        <div class="content-wrapper">
+                            <h4 title="<%= book.title %>"><%= book.title %></h4>
                             <p>by <%= book.authors.join(', ') %></p>
                             <form action="/books/add" method="POST">
                                 <input type="hidden" name="api_id" value="<%= book.id %>">
                                 <input type="hidden" name="title" value="<%= book.title %>">
                                 <input type="hidden" name="authors" value="<%= book.authors.join(', ') %>">
                                 <input type="hidden" name="thumbnail" value="<%= book.thumbnail %>">
+                                <input type="hidden" name="source" value="search">
+                                <input type="hidden" name="q" value="<%= query || '' %>">
                                 <button type="submit" class="btn btn-secondary">Add to My Books</button>
                             </form>
                         </div>
@@ -102,5 +245,72 @@
         </div>
     </div>
 <% } %>
+
+<div id="sticky-quote-container" class="sticky-quote-container">
+    <span class="sticky-quote-text"></span>
+</div>
+<script src="/js/sticky-quote.js"></script>
+
+<!-- Toast Notification Container -->
+<div id="toast-notification" class="toast-notification">
+    <span id="toast-message"></span>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const forms = document.querySelectorAll('form[action="/books/add"]');
+        const toast = document.getElementById('toast-notification');
+        const toastMessage = document.getElementById('toast-message');
+
+        forms.forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = new URLSearchParams(new FormData(form));
+                
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: formData
+                    });
+
+                    // Handle 409 Conflict (Duplicate) specifically or just generic JSON parsing
+                    // fetch doesn't throw on 4xx/5xx, so we parse regardless.
+                    const result = await response.json();
+
+                    if (result.message) {
+                        showToast(result.message, result.success ? 'success' : 'error');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    showToast('An unexpected error occurred.', 'error');
+                }
+            });
+        });
+
+        function showToast(message, type) {
+            toastMessage.textContent = message;
+            toast.className = 'toast-notification'; // Reset
+            toast.classList.add(type);
+            
+            // Force reflow to ensure transition plays if class changed quickly
+            void toast.offsetWidth; 
+            
+            toast.classList.add('show');
+
+            // Clear any existing timeout to prevent early hiding if multiple clicks
+            if (toast.hideTimeout) clearTimeout(toast.hideTimeout);
+
+            toast.hideTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 5000);
+        }
+    });
+</script>
 
 <%- include('partials/footer') %>

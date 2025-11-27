@@ -20,21 +20,19 @@ async function getRecommendations(userId) {
 
     console.log(`[API] MISS for recommendations for user: ${userId}. Generating...`);
 
-    // 1. Get user's most frequent tags
-    const userTagsResult = await pool.query(
-        `SELECT t.tag_name, COUNT(nt.tag_id) as tag_count
-         FROM notes n
-         JOIN notes_tags nt ON n.id = nt.note_id
-         JOIN tags t ON nt.tag_id = t.id
-         WHERE n.user_id = $1
-         GROUP BY t.tag_name
-         ORDER BY tag_count DESC
-         LIMIT 5`,
+    // 1. Get user's 3 most recent book titles
+    const userTitlesResult = await pool.query(
+        `SELECT b.title
+         FROM books b
+         JOIN users_books ub ON b.id = ub.book_id
+         WHERE ub.user_id = $1
+         ORDER BY ub.book_id DESC
+         LIMIT 3`,
         [userId]
     );
-    const userTags = userTagsResult.rows.map(row => row.tag_name);
+    const userTitles = userTitlesResult.rows.map(row => row.title);
 
-    // 2. Get user's most frequent authors
+    // 2. Get user's top 3 most frequent authors
     const userAuthorsResult = await pool.query(
         `SELECT b.author, COUNT(ub.book_id) as author_count
          FROM books b
@@ -42,7 +40,7 @@ async function getRecommendations(userId) {
          WHERE ub.user_id = $1 AND b.author IS NOT NULL
          GROUP BY b.author
          ORDER BY author_count DESC
-         LIMIT 5`,
+         LIMIT 3`,
         [userId]
     );
     const userAuthors = userAuthorsResult.rows.map(row => row.author);
@@ -50,21 +48,9 @@ async function getRecommendations(userId) {
     let recommendedBooks = [];
     const seenApiIds = new Set(); // To avoid duplicate recommendations
 
-    // Recommend based on tags
-    for (const tag of userTags) {
-        const searchResults = await searchBooks(tag); // Use Open Library search
-        searchResults.forEach(book => {
-            if (!seenApiIds.has(book.id)) {
-                recommendedBooks.push(book);
-                seenApiIds.add(book.id);
-            }
-        });
-        if (recommendedBooks.length >= 10) break; // Limit total recommendations
-    }
-
-    // Recommend based on authors (if we still need more)
-    if (recommendedBooks.length < 10) {
-        for (const author of userAuthors) {
+    // Recommend based on authors
+    for (const author of userAuthors) {
+        try {
             const searchResults = await searchBooks(author);
             searchResults.forEach(book => {
                 if (!seenApiIds.has(book.id)) {
@@ -72,7 +58,23 @@ async function getRecommendations(userId) {
                     seenApiIds.add(book.id);
                 }
             });
-            if (recommendedBooks.length >= 10) break;
+        } catch (e) { console.error(`Error searching for author ${author}:`, e.message); }
+        if (recommendedBooks.length >= 15) break; 
+    }
+
+    // Recommend based on titles (if we need more)
+    if (recommendedBooks.length < 15) {
+        for (const title of userTitles) {
+            try {
+                const searchResults = await searchBooks(title);
+                searchResults.forEach(book => {
+                    if (!seenApiIds.has(book.id)) {
+                        recommendedBooks.push(book);
+                        seenApiIds.add(book.id);
+                    }
+                });
+            } catch (e) { console.error(`Error searching for title ${title}:`, e.message); }
+            if (recommendedBooks.length >= 15) break;
         }
     }
 

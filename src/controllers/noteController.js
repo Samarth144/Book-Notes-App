@@ -129,7 +129,16 @@ const getEditNotePage = asyncHandler(async (req, res) => {
         res.status(403);
         throw new Error('Note not found or you do not have permission to edit it.');
     }
-    res.render('edit-note', { title: 'Edit Note', note: result.rows[0] });
+    const note = result.rows[0];
+
+    const bookResult = await pool.query('SELECT * FROM books WHERE id = $1', [note.book_id]);
+    if (bookResult.rows.length === 0) {
+        res.status(404);
+        throw new Error('Book not found.');
+    }
+    const book = bookResult.rows[0];
+
+    res.render('edit-note', { title: 'Edit Note', note: note, book: book });
 });
 
 // Update a note

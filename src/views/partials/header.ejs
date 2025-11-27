@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
 </head>
-<body class="theme-<%= user && user.preferences && user.preferences.theme ? user.preferences.theme : 'light' %> <%= title === 'Book Notes App' ? 'home-page' : 'app-page' %>">
+<body class="theme-dark <%= title === 'Book Notes App' ? 'home-page' : 'app-page' %>">
     <header>
         <div class="logo-container" onclick="location.href='/'">
             <!-- The SVG Scribble Background -->
@@ -27,7 +27,6 @@
                     <li><a href="/search">Search</a></li>
                     <li><a href="/users">Users</a></li>
                     <li><a href="/feed">Feed</a></li>
-                    <li><a href="/recommendations">Recommendations</a></li>
                     <li><a href="/profile">Profile</a></li>
                     <li><a href="/logout">Logout</a></li>
                 <% } else { %>

@@ -1,14 +1,38 @@
 const asyncHandler = require('express-async-handler');
 const { searchBooks } = require('../services/bookService'); // Open Library API search
-const { searchLocal } = require('../services/localSearchService'); // Local DB search
+const { searchLocal, getTrendingSearches } = require('../services/localSearchService'); // Local DB search
+const { getRecommendations } = require('../services/recommendationService');
 const redisClient = require('../services/cacheService');
 
 const getSearchPage = asyncHandler(async (req, res) => {
-    const query = req.query.q;
+    const { q: query, error, success } = req.query;
     let apiBooks = [];
     let localBooks = [];
     let localNotes = [];
+    let recommendations = [];
     let errors = [];
+    let messages = [];
+
+    // Fetch trending searches regardless of query
+    const trendingSearches = await getTrendingSearches();
+
+    // Fetch recommendations if user is logged in
+    if (req.session.user) {
+        try {
+            recommendations = await getRecommendations(req.session.user.id);
+        } catch (err) {
+            console.error("Failed to fetch recommendations:", err);
+            // Don't block the page load if recommendations fail
+        }
+    }
+
+    if (error === 'duplicate_book') {
+        errors.push("Great taste! You already picked this one. (Already added in your library)");
+    }
+
+    if (success === 'book_added') {
+        messages.push("Excellent choice! Added to your shelf.");
+    }
 
     if (query) {
         try {
@@ -47,6 +71,9 @@ const getSearchPage = asyncHandler(async (req, res) => {
         localNotes,
         query,
         errors,
+        messages,
+        trendingSearches, // Pass trending searches to the template
+        recommendations,
     });
 });
 

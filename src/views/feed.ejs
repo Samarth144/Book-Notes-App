@@ -1,29 +1,55 @@
 <%- include('partials/header') %>
 
-<div class="feed-container">
-    <h2>My Feed</h2>
-    <p>Activity from users you follow.</p>
+<div class="feed-page-wrapper">
+    <div class="feed-header">
+        <h2>Community Pulse</h2>
+        <p>See what your network is reading and thinking.</p>
+    </div>
 
-    <div class="feed-list">
+    <div class="feed-timeline">
         <% if (feedItems && feedItems.length > 0) { %>
             <% feedItems.forEach(item => { %>
-                <div class="feed-item">
-                    <div class="feed-item-content">
-                        <% if (item.action_type === 'added_book') { %>
-                            <strong><%= item.username %></strong> added <a href="/notes/<%= item.book_id %>"><strong><%= item.book_title %></strong></a> to their library.
-                        <% } else if (item.action_type === 'created_note') { %>
-                            <strong><%= item.username %></strong> created a <a href="/notes/<%= item.book_id %>#note-<%= item.note_id %>">new note</a> on <strong><%= item.book_title %></strong>.
-                        <% } else if (item.action_type === 'shared_note') { %>
-                            <strong><%= item.username %></strong> shared a <a href="/share/<%= item.share_slug %>">note</a> on <strong><%= item.book_title %></strong>.
-                        <% } %>
+                <div class="timeline-item">
+                    <div class="timeline-left">
+                        <div class="user-avatar-small" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <%= item.username.charAt(0).toUpperCase() %>
+                        </div>
+                        <div class="timeline-line"></div>
                     </div>
-                    <div class="feed-item-meta">
-                        <%= new Date(item.created_at).toLocaleString() %>
+                    
+                    <div class="timeline-card">
+                        <div class="card-header">
+                            <span class="username">@<%= item.username %></span>
+                            <span class="meta-date"><%= new Date(item.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) %></span>
+                        </div>
+                        
+                        <div class="card-body">
+                            <% if (item.action_type === 'added_book') { %>
+                                <div class="action-icon added">📚</div>
+                                <div class="action-text">
+                                    Added <a href="/search?q=<%= item.book_title %>" class="book-link"><%= item.book_title %></a> to their library.
+                                </div>
+                            <% } else if (item.action_type === 'created_note') { %>
+                                <div class="action-icon note">✍️</div>
+                                <div class="action-text">
+                                    Wrote a new note on <a href="/search?q=<%= item.book_title %>" class="book-link"><%= item.book_title %></a>.
+                                </div>
+                            <% } else if (item.action_type === 'shared_note') { %>
+                                <div class="action-icon shared">🔗</div>
+                                <div class="action-text">
+                                    Shared a <a href="/share/<%= item.share_slug %>" class="share-link-text">thought</a> on <a href="/search?q=<%= item.book_title %>" class="book-link"><%= item.book_title %></a>.
+                                </div>
+                            <% } %>
+                        </div>
                     </div>
                 </div>
             <% }) %>
         <% } else { %>
-            <p>Your feed is empty. Follow some <a href="/users">users</a> to see their activity here.</p>
+            <div class="empty-feed">
+                <div class="empty-icon">📭</div>
+                <h3>Your feed is quiet</h3>
+                <p>Follow some <a href="/users">users</a> to populate your timeline.</p>
+            </div>
         <% } %>
     </div>
 </div>

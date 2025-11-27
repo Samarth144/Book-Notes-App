@@ -17,7 +17,6 @@ const profileRoutes = require('./src/routes/profileRoutes');
 const shareRoutes = require('./src/routes/shareRoutes');
 const followRoutes = require('./src/routes/followRoutes');
 const feedRoutes = require('./src/routes/feedRoutes');
-const recommendationRoutes = require('./src/routes/recommendationRoutes');
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -71,7 +70,6 @@ app.use(profileRoutes);
 app.use(shareRoutes);
 app.use(followRoutes);
 app.use(feedRoutes);
-app.use(recommendationRoutes);
 
 app.get('/', (req, res) => {
     res.render('home', { title: 'Book Notes App', featuredBooks: [] });

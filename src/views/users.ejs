@@ -5,17 +5,24 @@
     <div class="users-list">
         <% if (users && users.length > 0) { %>
             <% users.forEach(u => { %>
-                <div class="user-card">
-                    <span class="username"><%= u.username %></span>
-                    <form action="/users/follow/<%= u.id %>" method="POST">
-                        <button type="submit" class="btn btn-sm <%= u.is_following ? 'btn-warning' : 'btn-info' %>">
-                            <%= u.is_following ? 'Unfollow' : 'Follow' %>
-                        </button>
-                    </form>
+                <div class="user-card <%= (u.preferences && u.preferences.card_theme) ? u.preferences.card_theme : '' %>">
+                    <div class="card-content">
+                        <div class="avatar">
+                            <%= u.username.charAt(0).toUpperCase() %>
+                        </div>
+                        <h2>@<%= u.username %></h2>
+                        <form action="/users/follow/<%= u.id %>" method="POST">
+                            <button type="submit">
+                                <%= u.is_following ? 'Unfollow' : 'Follow' %>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             <% }) %>
         <% } else { %>
-            <p>There are no other users to follow yet.</p>
+            <div class="empty-state">
+                <p>There are no other users to follow yet.</p>
+            </div>
         <% } %>
     </div>
 </div>

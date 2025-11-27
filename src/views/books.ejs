@@ -1,6 +1,15 @@
 <%- include('partials/header') %>
 
 <div class="library-container">
+    <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+        <div class="error-messages" style="margin-bottom: 20px;">
+            <ul>
+                <% errors.forEach(error => { %>
+                    <li><%= error %></li>
+                <% }) %>
+            </ul>
+        </div>
+    <% } %>
     <div class="library-header">
         <h2>My Library</h2>
         <form action="/books" method="GET" class="controls-form">
@@ -40,10 +49,14 @@
         <div class="library-grid">
             <% books.forEach(book => { %>
                 <div class="book-card">
-                    <img src="<%= book.cover_image_url || '/images/placeholder.png' %>" alt="Cover of <%= book.title %>">
-                    <h3><%= book.title %></h3>
-                    <p><%= book.author %></p>
-                    <a href="/notes/<%= book.id %>" class="btn-view-notes">View Notes</a>
+                    <div class="card-bg-animation"></div>
+                    <img src="<%= book.cover_image_url || '/images/placeholder.jpg' %>" alt="Cover of <%= book.title %>">
+                    
+                    <div class="content-wrapper">
+                        <h4 title="<%= book.title %>"><%= book.title %></h4>
+                        <p><%= book.author %></p>
+                        <a href="/notes/<%= book.id %>" class="btn btn-secondary">Read Notes →</a>
+                    </div>
                 </div>
             <% }) %>
         </div>
@@ -61,7 +74,9 @@
         <% } %>
 
     <% } else { %>
-        <p>Your library is empty or no books match your filter. Use the <a href="/search">Search</a> page to find and add books.</p>
+        <div class="empty-state-message" style="background-color: #e2e8f0; color: #1a202c; border: 1px solid #cbd5e1; padding: 1.5em; border-radius: 8px; margin-top: 2em; text-align: center;">
+            <p style="margin: 0;">Your library is empty or no books match your filter. Use the <a href="/search" style="color: #4c51bf; text-decoration: underline;">Search</a> page to find and add books.</p>
+        </div>
     <% } %>
 </div>
 

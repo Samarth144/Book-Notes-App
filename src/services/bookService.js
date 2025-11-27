@@ -37,6 +37,7 @@ async function searchBooks(query) {
             description: 'No description available from Open Library search.',
             // Construct thumbnail URL from cover ID
             thumbnail: doc.cover_i ? `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg` : null,
+            categories: doc.subject ? doc.subject.slice(0, 3) : [],
         })) : [];
 
         cache.set(cacheKey, books);

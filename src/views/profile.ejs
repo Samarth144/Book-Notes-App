@@ -1,32 +1,461 @@
 <%- include('partials/header') %>
 
-<div class="form-container">
-    <h2>My Profile</h2>
-    <p>User: <%= user.username %></p>
-    <p>Email: <%= user.email %></p>
+<%
+    // Theme Logic Helper
+    const cardTheme = user.preferences && user.preferences.card_theme ? user.preferences.card_theme : '';
+    let themeColor = '#6366f1'; // Default Indigo
+    let themeGradient = 'linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%)'; // Default Gradient
 
-    <hr style="margin: 2em 0;">
+    switch(cardTheme) {
+        case 'purple':
+            themeColor = '#8b5cf6';
+            themeGradient = 'linear-gradient(135deg, #7c3aed 0%, #c026d3 100%)';
+            break;
+        case 'cyan':
+            themeColor = '#06b6d4';
+            themeGradient = 'linear-gradient(135deg, #0891b2 0%, #22d3ee 100%)';
+            break;
+        case 'orange':
+            themeColor = '#f97316';
+            themeGradient = 'linear-gradient(135deg, #ea580c 0%, #facc15 100%)';
+            break;
+        case 'red':
+            themeColor = '#ef4444';
+            themeGradient = 'linear-gradient(135deg, #dc2626 0%, #f87171 100%)';
+            break;
+        case 'gold':
+            themeColor = '#eab308';
+            themeGradient = 'linear-gradient(135deg, #ca8a04 0%, #fde047 100%)';
+            break;
+    }
+%>
 
-    <h3>Preferences</h3>
-    <form action="/profile" method="POST">
-        <div class="form-group">
-            <label for="theme">Theme</label>
-            <select id="theme" name="theme">
-                <option value="light" <%= user.preferences && user.preferences.theme === 'light' ? 'selected' : '' %>>Light</option>
-                <option value="dark" <%= user.preferences && user.preferences.theme === 'dark' ? 'selected' : '' %>>Dark</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="defaultSort">Default Library Sort</label>
-            <select id="defaultSort" name="defaultSort">
-                <option value="title_asc" <%= user.preferences && user.preferences.defaultSort === 'title_asc' ? 'selected' : '' %>>Title (A-Z)</option>
-                <option value="title_desc" <%= user.preferences && user.preferences.defaultSort === 'title_desc' ? 'selected' : '' %>>Title (Z-A)</option>
-                <option value="author_asc" <%= user.preferences && user.preferences.defaultSort === 'author_asc' ? 'selected' : '' %>>Author (A-Z)</option>
-                <option value="author_desc" <%= user.preferences && user.preferences.defaultSort === 'author_desc' ? 'selected' : '' %>>Author (Z-A)</option>
-            </select>
-        </div>
-        <button type="submit" class="btn">Save Preferences</button>
-    </form>
+<div class="dashboard-container">
+    <!-- Hero Banner -->
+    <div class="profile-banner" style="background: <%= themeGradient %>;">
+        <div class="banner-overlay"></div>
+    </div>
+
+    <div class="profile-content-grid">
+        <!-- Left Column: User Identity -->
+        <aside class="profile-sidebar">
+            <!-- specific-user-card class added to override fixed height from global styles -->
+            <div class="user-card <%= cardTheme %>" style="width: 100%; height: auto; min-height: 420px; position: sticky; top: 100px;">
+                <div class="card-content" style="position: relative; inset: 0; margin: 4px; width: calc(100% - 8px); height: calc(100% - 8px); padding: 2.5rem 1rem;">
+                    
+                    <div class="avatar">
+                        <%= user.username.charAt(0).toUpperCase() %>
+                    </div>
+                    
+                    <h2 style="font-size: 1.8rem; margin-top: 1rem;"><%= user.username %></h2>
+                    <p class="email-display" style="color: #94a3b8; margin-bottom: 2rem;"><%= user.email %></p>
+                    
+                <div class="user-stats-row" style="width: 100%;">
+                        <div class="stat-item">
+                            <span class="stat-label">Role</span>
+                            <span class="stat-value">Member</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Joined</span>
+                            <span class="stat-value"><%= user.created_at ? new Date(user.created_at).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : 'N/A' %></span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Column: Settings & Configuration -->
+        <main class="profile-main">
+            <div class="settings-panel">
+                <div class="panel-header">
+                    <h2>Application Preferences</h2>
+                    <p>Customize your reading experience and visual interface.</p>
+                </div>
+
+                <form action="/profile" method="POST" class="settings-form">
+                    
+                    <div class="setting-group">
+                        <div class="setting-info">
+                            <label for="defaultSort">Library Sorting</label>
+                            <span class="setting-desc">Choose how your books are ordered by default.</span>
+                        </div>
+                        <div class="setting-control">
+                            <div class="custom-select-wrapper">
+                                <select id="defaultSort" name="defaultSort" class="dashboard-select">
+                                    <option value="title_asc" <%= user.preferences && user.preferences.defaultSort === 'title_asc' ? 'selected' : '' %>>Title (A-Z)</option>
+                                    <option value="title_desc" <%= user.preferences && user.preferences.defaultSort === 'title_desc' ? 'selected' : '' %>>Title (Z-A)</option>
+                                    <option value="author_asc" <%= user.preferences && user.preferences.defaultSort === 'author_asc' ? 'selected' : '' %>>Author (A-Z)</option>
+                                    <option value="author_desc" <%= user.preferences && user.preferences.defaultSort === 'author_desc' ? 'selected' : '' %>>Author (Z-A)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="panel-divider">
+
+                    <div class="setting-group">
+                        <div class="setting-info">
+                            <label for="card_theme">Visual Theme</label>
+                            <span class="setting-desc">Select the accent color theme for your dashboard cards.</span>
+                        </div>
+                        <div class="setting-control">
+                            <div class="custom-select-wrapper">
+                                <select id="card_theme" name="card_theme" class="dashboard-select" onchange="handleThemeChange(this.value)">
+                                    <option value="" <%= !user.preferences || !user.preferences.card_theme ? 'selected' : '' %>>Midnight Monochrome</option>
+                                    <option value="purple" <%= user.preferences && user.preferences.card_theme === 'purple' ? 'selected' : '' %>>Nebula Dream (Purple)</option>
+                                    <option value="cyan" <%= user.preferences && user.preferences.card_theme === 'cyan' ? 'selected' : '' %>>Neon Future (Cyan)</option>
+                                    <option value="orange" <%= user.preferences && user.preferences.card_theme === 'orange' ? 'selected' : '' %>>Solar Flare (Orange)</option>
+                                    <option value="red" <%= user.preferences && user.preferences.card_theme === 'red' ? 'selected' : '' %>>Crimson Tide (Red)</option>
+                                    <option value="gold" <%= user.preferences && user.preferences.card_theme === 'gold' ? 'selected' : '' %>>Golden Era (Gold)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
 </div>
+
+<script>
+    const form = document.querySelector('.settings-form');
+    
+    document.getElementById('defaultSort').addEventListener('change', () => {
+        savePreferences();
+    });
+
+    function handleThemeChange(theme) {
+        updateThemePreview(theme);
+        savePreferences();
+    }
+
+    async function savePreferences() {
+        const formData = new FormData(form);
+        const data = new URLSearchParams(formData);
+
+        try {
+            const response = await fetch('/profile', {
+                method: 'POST',
+                body: data,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    // Add header to indicate AJAX request if needed by server, 
+                    // though standard redirect handling might need adjustment in controller
+                    // or we just ignore the redirect response here.
+                }
+            });
+            
+            if (response.ok) {
+                // Optional: Show a small toast or indicator that saving worked
+                // For now, silent save is fine as the UI updates instantly
+                console.log('Preferences saved successfully');
+            } else {
+                console.error('Failed to save preferences');
+            }
+        } catch (error) {
+            console.error('Error saving preferences:', error);
+        }
+    }
+
+    function updateThemePreview(theme) {
+        const banner = document.querySelector('.profile-banner');
+        const userCard = document.querySelector('.user-card');
+        
+        // Map themes to gradients (must match server-side logic for consistency)
+        let gradient = 'linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%)'; // Default
+        
+        switch(theme) {
+            case 'purple':
+                gradient = 'linear-gradient(135deg, #7c3aed 0%, #c026d3 100%)';
+                break;
+            case 'cyan':
+                gradient = 'linear-gradient(135deg, #0891b2 0%, #22d3ee 100%)';
+                break;
+            case 'orange':
+                gradient = 'linear-gradient(135deg, #ea580c 0%, #facc15 100%)';
+                break;
+            case 'red':
+                gradient = 'linear-gradient(135deg, #dc2626 0%, #f87171 100%)';
+                break;
+            case 'gold':
+                gradient = 'linear-gradient(135deg, #ca8a04 0%, #fde047 100%)';
+                break;
+        }
+
+        // Apply Gradient
+        banner.style.background = gradient;
+
+        // Apply Card Class
+        // Remove existing theme classes
+        userCard.classList.remove('purple', 'cyan', 'orange', 'red', 'gold');
+        // Add new one if not default
+        if (theme) {
+            userCard.classList.add(theme);
+        }
+    }
+</script>
+
+<style>
+    /* --- Layout & Structure --- */
+    body {
+        background-color: #0f172a; /* Deep Slate */
+        color: #f1f5f9;
+        overflow-x: hidden;
+    }
+
+    .dashboard-container {
+        width: 100%;
+        min-height: 100vh;
+        position: relative;
+    }
+
+    /* --- Hero Banner --- */
+    .profile-banner {
+        height: 280px;
+        width: 100%;
+        background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+        position: relative;
+        z-index: 1;
+    }
+    
+    .banner-overlay {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: 
+            radial-gradient(at 80% 0%, rgba(255,255,255,0.1) 0px, transparent 50%),
+            radial-gradient(at 0% 50%, rgba(255,255,255,0.1) 0px, transparent 50%),
+            url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.07' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+        mix-blend-mode: overlay;
+    }
+
+    /* --- Grid Layout --- */
+    .profile-content-grid {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 2rem;
+        max-width: 1400px;
+        margin: -80px auto 0; /* Overlap banner */
+        padding: 0 2rem 4rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* --- Left Sidebar: Identity Card --- */
+    .identity-card {
+        background: rgba(30, 41, 59, 0.8);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+        position: sticky;
+        top: 100px;
+    }
+
+    .avatar-wrapper {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+    }
+
+    .profile-avatar-xl {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: #1e293b;
+        color: #e2e8f0;
+        font-size: 3.5rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 4px solid rgba(30, 41, 59, 1);
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.5); /* Glow ring */
+    }
+
+    .status-indicator {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        width: 20px;
+        height: 20px;
+        background: #22c55e;
+        border: 3px solid #1e293b;
+        border-radius: 50%;
+    }
+
+    .username-display {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: white;
+        margin: 0 0 0.25rem 0;
+    }
+
+    .email-display {
+        color: #94a3b8;
+        font-size: 0.95rem;
+        margin-bottom: 2rem;
+    }
+
+    .user-stats-row {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 1.5rem;
+    }
+
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #64748b;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-value {
+        font-weight: 600;
+        color: #f1f5f9;
+    }
+
+    /* --- Right Column: Settings Panel --- */
+    .settings-panel {
+        background: #1e293b;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 0;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .panel-header {
+        padding: 2.5rem 3rem;
+        background: rgba(15, 23, 36, 0.3);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .panel-header h2 {
+        font-size: 1.5rem;
+        margin: 0 0 0.5rem 0;
+        color: #fff;
+    }
+
+    .panel-header p {
+        color: #94a3b8;
+        margin: 0;
+    }
+
+    .settings-form {
+        padding: 2rem 3rem;
+    }
+
+    .setting-group {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 2rem;
+        padding: 1.5rem 0;
+        align-items: start;
+    }
+
+    .setting-info label {
+        display: block;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #f1f5f9;
+        margin-bottom: 0.5rem;
+    }
+
+    .setting-desc {
+        color: #64748b;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        display: block;
+    }
+
+    .dashboard-select {
+        width: 100%;
+        background-color: #0f172a;
+        border: 1px solid #334155;
+        color: #f1f5f9;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        appearance: none;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .dashboard-select:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        outline: none;
+    }
+
+    .custom-select-wrapper {
+        position: relative;
+    }
+    .custom-select-wrapper::after {
+        content: '▼';
+        font-size: 0.75rem;
+        color: #64748b;
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+    .panel-divider {
+        border: 0;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.05);
+        margin: 0.5rem 0;
+    }
+
+    .form-actions {
+        margin-top: 3rem;
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-lg {
+        padding: 0.85rem 2.5rem;
+        font-size: 1rem;
+        letter-spacing: 0.025em;
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 900px) {
+        .profile-content-grid {
+            grid-template-columns: 1fr;
+            margin-top: -40px;
+        }
+        
+        .identity-card {
+            position: static;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .setting-group {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .setting-control {
+            width: 100%;
+        }
+    }
+</style>
 
 <%- include('partials/footer') %>

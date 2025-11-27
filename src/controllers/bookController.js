@@ -1,13 +1,19 @@
 const asyncHandler = require('express-async-handler');
 const pool = require('../db/pool');
+const cache = require('../services/cacheService');
 
 const getLibrary = asyncHandler(async (req, res) => {
     const userId = req.session.user.id;
     const defaultSort = req.session.user.preferences?.defaultSort || 'title_asc';
-    const { sort = defaultSort, filter = '', page = 1, tag = '' } = req.query;
+    const { sort = defaultSort, filter = '', page = 1, tag = '', error } = req.query;
 
     const itemsPerPage = 12;
     const offset = (page - 1) * itemsPerPage;
+
+    const errors = [];
+    if (error === 'duplicate_book') {
+        errors.push("Great taste! You already picked this one. (Already added in your library)");
+    }
 
     const sortOptions = {
         title_asc: 'b.title ASC',
@@ -81,6 +87,7 @@ const getLibrary = asyncHandler(async (req, res) => {
         filter,
         tag,
         allTags: allTagsResult.rows,
+        errors,
     });
 });
 
@@ -118,9 +125,34 @@ const addBook = asyncHandler(async (req, res) => {
                 'INSERT INTO activity_log (user_id, action_type, book_id) VALUES ($1, $2, $3)',
                 [userId, 'added_book', bookId]
             );
+        } else {
+            await pool.query('COMMIT');
+            
+            if (req.headers.accept && req.headers.accept.includes('application/json')) {
+                return res.status(409).json({ success: false, message: "Great taste! You already picked this one. (Already added in your library)" });
+            }
+
+            if (req.body.source === 'search') {
+                const query = req.body.q ? encodeURIComponent(req.body.q) : '';
+                return res.redirect(`/search?q=${query}&error=duplicate_book`);
+            }
+            return res.redirect('/books?error=duplicate_book');
         }
 
         await pool.query('COMMIT');
+
+        // Invalidate recommendation cache for this user so new recommendations are generated
+        cache.del(`recommendations_${userId}`);
+
+        if (req.headers.accept && req.headers.accept.includes('application/json')) {
+            return res.json({ success: true, message: "Excellent choice! Added to your shelf." });
+        }
+
+        if (req.body.source === 'search') {
+            const query = req.body.q ? encodeURIComponent(req.body.q) : '';
+            return res.redirect(`/search?q=${query}&success=book_added`);
+        }
+
         res.redirect('/books');
     } catch (err) {
         await pool.query('ROLLBACK');

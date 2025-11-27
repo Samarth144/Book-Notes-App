@@ -11,6 +11,7 @@ const listUsers = asyncHandler(async (req, res) => {
         SELECT 
             u.id, 
             u.username,
+            u.preferences,
             EXISTS (
                 SELECT 1 FROM follows WHERE follower_id = $1 AND following_id = u.id
             ) as is_following
