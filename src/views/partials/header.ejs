@@ -10,7 +10,7 @@
 </head>
 <body class="theme-dark <%= title === 'Book Notes App' ? 'home-page' : 'app-page' %>">
     <header>
-        <div class="logo-container" onclick="location.href='/'">
+        <div class="logo-container">
             <!-- The SVG Scribble Background -->
             <svg class="scribble-svg" viewBox="0 0 300 100" preserveAspectRatio="none">
                 <!-- A chaotic, energetic scribble path -->
@@ -22,7 +22,7 @@
         <nav>
             <ul>
                 <% if (user) { %>
-                    <li><span>Welcome, <%= user.username %></span></li>
+                    <li><span class="welcome-text" style="background: linear-gradient(135deg, #6366f1, #a855f7); color: white; padding: 0.5rem 1.25rem; border-radius: 999px; font-weight: 600; font-size: 1rem; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3); letter-spacing: 0.5px;">Welcome, <%= user.username %></span></li>
                     <li><a href="/books">My Books</a></li>
                     <li><a href="/search">Search</a></li>
                     <li><a href="/users">Users</a></li>

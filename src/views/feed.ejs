@@ -6,52 +6,268 @@
         <p>See what your network is reading and thinking.</p>
     </div>
 
-    <div class="feed-timeline">
-        <% if (feedItems && feedItems.length > 0) { %>
-            <% feedItems.forEach(item => { %>
-                <div class="timeline-item">
-                    <div class="timeline-left">
-                        <div class="user-avatar-small" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                            <%= item.username.charAt(0).toUpperCase() %>
-                        </div>
-                        <div class="timeline-line"></div>
-                    </div>
-                    
-                    <div class="timeline-card">
-                        <div class="card-header">
-                            <span class="username">@<%= item.username %></span>
-                            <span class="meta-date"><%= new Date(item.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) %></span>
-                        </div>
-                        
-                        <div class="card-body">
-                            <% if (item.action_type === 'added_book') { %>
-                                <div class="action-icon added">📚</div>
-                                <div class="action-text">
-                                    Added <a href="/search?q=<%= item.book_title %>" class="book-link"><%= item.book_title %></a> to their library.
-                                </div>
-                            <% } else if (item.action_type === 'created_note') { %>
-                                <div class="action-icon note">✍️</div>
-                                <div class="action-text">
-                                    Wrote a new note on <a href="/search?q=<%= item.book_title %>" class="book-link"><%= item.book_title %></a>.
-                                </div>
-                            <% } else if (item.action_type === 'shared_note') { %>
-                                <div class="action-icon shared">🔗</div>
-                                <div class="action-text">
-                                    Shared a <a href="/share/<%= item.share_slug %>" class="share-link-text">thought</a> on <a href="/search?q=<%= item.book_title %>" class="book-link"><%= item.book_title %></a>.
-                                </div>
-                            <% } %>
-                        </div>
-                    </div>
+    <div class="feed-layout">
+        <!-- Left Column: Main Feed -->
+        <div class="feed-main-column">
+            <!-- Filter Bar -->
+            <div class="feed-filters">
+                <div class="search-wrapper-feed">
+                    <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                    <input type="text" id="feed-search" placeholder="Search updates..." class="search-input">
                 </div>
-            <% }) %>
-        <% } else { %>
-            <div class="empty-feed">
-                <div class="empty-icon">📭</div>
-                <h3>Your feed is quiet</h3>
-                <p>Follow some <a href="/users">users</a> to populate your timeline.</p>
+                <div class="filter-select-wrapper">
+                    <select id="feed-type-filter" class="styled-select">
+                        <option value="all">All Activity</option>
+                        <option value="added_book">Added Books</option>
+                        <option value="created_note">Notes</option>
+                        <option value="shared_note">Thoughts</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="feed-timeline" id="feed-timeline">
+            <%- include('partials/feed-list') %>
+            
+            <% if (feedItems && feedItems.length === 0) { %>
+                <div class="empty-feed" style="background-color: #e2e8f0; color: #1a202c;">
+                    <div class="empty-icon">📭</div>
+                    <h3>Your feed is quiet</h3>
+                    <p>Your activity feed awaits! Connect with fellow readers and see what inspires them. You can find them on the <a href="/users" style="color: #4c51bf;">Users</a> page.</p>
+                </div>
+            <% } %>
+        </div>
+        
+        <% if (feedItems && feedItems.length > 0) { %>
+            <div class="load-more-container" style="text-align: center; margin-top: 2rem;">
+                <button id="load-more-btn" class="btn btn-secondary">Show More</button>
             </div>
         <% } %>
+        </div> <!-- End feed-main-column -->
+
+        <!-- Right Column: Weekly Digest -->
+        <aside class="feed-sidebar">
+            <div class="weekly-digest-card">
+                <div class="digest-header">
+                    <h3>Top Notes This Week</h3>
+                    <span class="digest-badge">Weekly Digest</span>
+                </div>
+                
+                <div class="digest-list">
+                    <% if (weeklyTop && weeklyTop.length > 0) { %>
+                        <% weeklyTop.forEach((item, index) => { %>
+                            <div class="digest-item">
+                                <div class="digest-rank">#<%= index + 1 %></div>
+                                <div class="digest-thumb">
+                                    <% if (item.cover_image_url) { %>
+                                        <img src="<%= item.cover_image_url %>" alt="<%= item.book_title %>">
+                                    <% } else { %>
+                                        <div class="placeholder-thumb">📚</div>
+                                    <% } %>
+                                </div>
+                                <div class="digest-content">
+                                    <a href="<%= item.action_type === 'shared_note' ? '/share/' + item.share_slug : '/search?q=' + item.book_title %>" class="digest-title">
+                                        <%= item.book_title %>
+                                    </a>
+                                    <div class="digest-meta">
+                                        <span class="digest-user">@<%= item.username %></span>
+                                        <span class="digest-reactions">
+                                            🔥 <%= item.reaction_count %>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <div class="digest-empty">
+                            <p>No trending notes yet this week.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </aside>
     </div>
 </div>
 
 <%- include('partials/footer') %>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Reaction Logic
+    const timeline = document.getElementById('feed-timeline');
+    
+    // Event delegation for reactions (since new items are added dynamically)
+    timeline.addEventListener('click', async (e) => {
+        const button = e.target.closest('.reaction-btn');
+        if (!button) return;
+        
+        e.preventDefault();
+        const bar = button.closest('.reactions-bar');
+        const activityId = bar.dataset.activityId;
+        const type = button.dataset.type;
+
+        // Optimistic UI update
+        const wasActive = button.classList.contains('active');
+        const countSpan = button.querySelector('.count');
+        let currentCount = parseInt(countSpan.textContent) || 0;
+
+        if (wasActive) {
+            button.classList.remove('active');
+            currentCount = Math.max(0, currentCount - 1);
+        } else {
+            button.classList.add('active');
+            currentCount++;
+        }
+        countSpan.textContent = currentCount > 0 ? currentCount : '';
+
+        try {
+            const response = await fetch(`/reactions/${activityId}/toggle`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ type })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.action === 'added') {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+                countSpan.textContent = data.count > 0 ? data.count : '';
+            } else {
+                console.error('Failed to toggle reaction');
+                // Revert
+                if (wasActive) {
+                    button.classList.add('active');
+                    currentCount++;
+                } else {
+                    button.classList.remove('active');
+                    currentCount--;
+                }
+                countSpan.textContent = currentCount > 0 ? currentCount : '';
+            }
+        } catch (error) {
+            console.error('Error toggling reaction:', error);
+            // Revert
+            if (wasActive) {
+                button.classList.add('active');
+                currentCount++;
+            } else {
+                button.classList.remove('active');
+                currentCount--;
+            }
+            countSpan.textContent = currentCount > 0 ? currentCount : '';
+        }
+    });
+
+    // Load More & Filter Logic
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    const searchInput = document.getElementById('feed-search');
+    const typeFilter = document.getElementById('feed-type-filter');
+    let currentPage = 1;
+    let currentSearch = '';
+    let currentType = 'all';
+
+    // Debounce function for search
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    async function fetchFeed(page, append = false) {
+        const btn = loadMoreBtn;
+        if (btn) {
+            btn.textContent = 'Loading...';
+            btn.disabled = true;
+        }
+
+        const query = new URLSearchParams({
+            page: page,
+            ajax: 'true',
+            search: currentSearch,
+            type: currentType
+        });
+
+        try {
+            const response = await fetch(`/feed?${query.toString()}`);
+            if (response.ok) {
+                const html = await response.text();
+                
+                if (append) {
+                    if (html.trim().length === 0) {
+                        if (btn) {
+                            btn.textContent = 'No more updates';
+                            btn.disabled = true;
+                        }
+                        return;
+                    }
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = html;
+                    while (tempDiv.firstChild) {
+                        timeline.appendChild(tempDiv.firstChild);
+                    }
+                } else {
+                    timeline.innerHTML = html;
+                    // Reset button state if we reloaded and got content
+                    if (html.trim().length === 0) {
+                         timeline.innerHTML = '<div class="empty-feed" style="background-color: #e2e8f0; color: #1a202c;"><div class="empty-icon">🔍</div><h3>No results found</h3><p>Try adjusting your filters.</p></div>';
+                         if (btn) btn.style.display = 'none';
+                    } else {
+                         if (btn) {
+                             btn.style.display = 'inline-block';
+                             btn.textContent = 'Show More';
+                             btn.disabled = false;
+                         }
+                    }
+                }
+
+                if (btn && append) {
+                    btn.textContent = 'Show More';
+                    btn.disabled = false;
+                }
+            } else {
+                console.error('Error fetching feed');
+                if (btn) {
+                    btn.textContent = 'Error loading';
+                    btn.disabled = false;
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching feed:', error);
+            if (btn) {
+                btn.textContent = 'Error loading';
+                btn.disabled = false;
+            }
+        }
+    }
+
+    // Filter Event Listeners
+    searchInput.addEventListener('input', debounce((e) => {
+        currentSearch = e.target.value;
+        currentPage = 1;
+        fetchFeed(1, false);
+    }, 500));
+
+    typeFilter.addEventListener('change', (e) => {
+        currentType = e.target.value;
+        currentPage = 1;
+        fetchFeed(1, false);
+    });
+
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', () => {
+            currentPage++;
+            fetchFeed(currentPage, true);
+        });
+    }
+});
+</script>

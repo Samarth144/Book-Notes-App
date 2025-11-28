@@ -27,6 +27,18 @@
             themeColor = '#eab308';
             themeGradient = 'linear-gradient(135deg, #ca8a04 0%, #fde047 100%)';
             break;
+        case 'emerald':
+            themeColor = '#10b981';
+            themeGradient = 'linear-gradient(135deg, #059669 0%, #34d399 100%)';
+            break;
+        case 'rose':
+            themeColor = '#f43f5e';
+            themeGradient = 'linear-gradient(135deg, #e11d48 0%, #fb7185 100%)';
+            break;
+        case 'sky':
+            themeColor = '#0ea5e9';
+            themeGradient = 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)';
+            break;
     }
 %>
 
@@ -102,12 +114,15 @@
                         <div class="setting-control">
                             <div class="custom-select-wrapper">
                                 <select id="card_theme" name="card_theme" class="dashboard-select" onchange="handleThemeChange(this.value)">
-                                    <option value="" <%= !user.preferences || !user.preferences.card_theme ? 'selected' : '' %>>Midnight Monochrome</option>
+                                    <option value="" <%= !user.preferences || !user.preferences.card_theme ? 'selected' : '' %>>Midnight Monochrome (Black)</option>
                                     <option value="purple" <%= user.preferences && user.preferences.card_theme === 'purple' ? 'selected' : '' %>>Nebula Dream (Purple)</option>
                                     <option value="cyan" <%= user.preferences && user.preferences.card_theme === 'cyan' ? 'selected' : '' %>>Neon Future (Cyan)</option>
                                     <option value="orange" <%= user.preferences && user.preferences.card_theme === 'orange' ? 'selected' : '' %>>Solar Flare (Orange)</option>
                                     <option value="red" <%= user.preferences && user.preferences.card_theme === 'red' ? 'selected' : '' %>>Crimson Tide (Red)</option>
                                     <option value="gold" <%= user.preferences && user.preferences.card_theme === 'gold' ? 'selected' : '' %>>Golden Era (Gold)</option>
+                                    <option value="emerald" <%= user.preferences && user.preferences.card_theme === 'emerald' ? 'selected' : '' %>>Emerald City (Green)</option>
+                                    <option value="rose" <%= user.preferences && user.preferences.card_theme === 'rose' ? 'selected' : '' %>>Rose Garden (Pink)</option>
+                                    <option value="sky" <%= user.preferences && user.preferences.card_theme === 'sky' ? 'selected' : '' %>>Morning Sky (Blue)</option>
                                 </select>
                             </div>
                         </div>
@@ -181,6 +196,15 @@
             case 'gold':
                 gradient = 'linear-gradient(135deg, #ca8a04 0%, #fde047 100%)';
                 break;
+            case 'emerald':
+                gradient = 'linear-gradient(135deg, #059669 0%, #34d399 100%)';
+                break;
+            case 'rose':
+                gradient = 'linear-gradient(135deg, #e11d48 0%, #fb7185 100%)';
+                break;
+            case 'sky':
+                gradient = 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)';
+                break;
         }
 
         // Apply Gradient
@@ -188,7 +212,7 @@
 
         // Apply Card Class
         // Remove existing theme classes
-        userCard.classList.remove('purple', 'cyan', 'orange', 'red', 'gold');
+        userCard.classList.remove('purple', 'cyan', 'orange', 'red', 'gold', 'emerald', 'rose', 'sky');
         // Add new one if not default
         if (theme) {
             userCard.classList.add(theme);
